@@ -1,0 +1,4 @@
+/node_modules
+temporaryData.js
+headerSchema.js
+*.env
