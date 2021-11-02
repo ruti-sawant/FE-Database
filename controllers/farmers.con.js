@@ -29,6 +29,16 @@ module.exports.getFarmerData = function (id, fields) {
     })
 }
 
+
+module.exports.getFarmerDataUsingGCN = function (id, fields) {
+    return new Promise((resolve, reject) => {
+        Models.FarmerInfo.find({ "personalInformation.GCN": id }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+
 module.exports.updateFarmer = function (id, data) {
     return new Promise((resolve, reject) => {
         Models.FarmerInfo.updateOne({ _id: id },

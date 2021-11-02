@@ -99,7 +99,24 @@ router.delete("/:farmerId", async (req, res) => {
         .catch((err) => {
             res.status(400).send({ message: err.message });
         })
-})
+});
+
+router.get("/GCN/:gcnKey", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    controllers.getFarmerDataUsingGCN(req.params.gcnKey, query)
+        .then((data) => {
+            // console.log(data);
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+});
 
 //supporting functions 
 function builtProjection(object) {
