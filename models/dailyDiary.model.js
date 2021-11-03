@@ -5,6 +5,10 @@ const dailyDiarySchema = {
         type: mongoose.Types.ObjectId,
         required: true,
     },
+    GCN: {
+        type: String,
+        required: true,
+    },
     plot: {
         type: [String],
         required: true,
