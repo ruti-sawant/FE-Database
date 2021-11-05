@@ -1,13 +1,21 @@
 const mongoose = require("mongoose");
 const Models = require("../models/dailyDiary.model.js");
 
-module.exports.insertDailyDiary = async function (diary) {
+module.exports.insertDailyDiary = function (diary) {
     return new Promise((resolve, reject) => {
         const diaryObject = new Models.DailyDiary(diary);
         diaryObject.save()
             .then(resolve)
             .catch(reject);
     });
+}
+
+module.exports.insertMultipleDailyDiaries = function (diaries) {
+    return new Promise((resolve, reject) => {
+        Models.DailyDiary.insertMany(diaries)
+            .then(resolve)
+            .catch(reject);
+    })
 }
 
 module.exports.getAllDiaries = function (fields) {

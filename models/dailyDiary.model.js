@@ -10,7 +10,7 @@ const dailyDiarySchema = {
         required: true,
     },
     plot: {
-        type: [String],
+        type: String,
         required: true,
     },
     proposedDate: {

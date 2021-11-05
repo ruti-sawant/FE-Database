@@ -65,7 +65,7 @@ router.get("/:farmerId/:diaryId?", (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
     if (!validate(req.headers.apiid)) {
         res.status(401).send({ message: "Unauthosized request" });
         return;
@@ -78,6 +78,21 @@ router.post("/", async (req, res) => {
             res.status(400).send({ message: err.message });
         })
 });
+
+router.post("/all", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    controllers.insertMultipleDailyDiaries(req.body.data)
+        .then((data) => {
+            res.status(200).send({ message: "All diaries inserted" });
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(400).send({ message: err.message });
+        })
+})
 
 router.delete("/:farmerId/:diaryId?", (req, res) => {
     if (!validate(req.headers.apiid)) {
