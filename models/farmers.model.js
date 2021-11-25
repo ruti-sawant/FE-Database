@@ -18,7 +18,8 @@ const farmerSchema = {
         familyName: {
             type: String,
             required: true,
-        }
+        },
+        farmMap: String,//to store my map link 
     },
     plots: [
         {

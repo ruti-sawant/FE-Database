@@ -9,6 +9,10 @@ const dailyDiarySchema = {
         type: String,
         required: true,
     },
+    MHCode: {
+        type: String,
+        required: true,
+    },
     plot: {
         type: String,
         required: true,
@@ -17,8 +21,6 @@ const dailyDiarySchema = {
         type: Date,
         required: true
     },
-    completedDate: Date,
-    isCompleted: Boolean,//for backend that is work is completed or it is yet to complete.
     spraying: {
         details: [{
             category: String,
@@ -26,6 +28,11 @@ const dailyDiarySchema = {
             quantity: Number,
             imageUrl: String,
         }],
+        completedDate: Date,
+        isCompleted: {
+            type: Boolean,
+            default: false,
+        },
     },
     irrigation: {
         numberOfHours: Number,
@@ -34,6 +41,11 @@ const dailyDiarySchema = {
             quantity: Number,
             imageUrl: String,
         }],
+        completedDate: Date,
+        isCompleted: {
+            type: Boolean,
+            default: false,
+        },
     },
     farmWork: {
         details: [{
@@ -41,7 +53,11 @@ const dailyDiarySchema = {
             comments: String,
             imageUrl: String,
         }],
-
+        completedDate: Date,
+        isCompleted: {
+            type: Boolean,
+            default: false,
+        },
     },
     soilWork: {
         details: [{
@@ -49,6 +65,11 @@ const dailyDiarySchema = {
             area: Number,//has to be confirmed because if client wants units then it is preferable to directly store string.
             imageUrl: String,
         }],
+        completedDate: Date,
+        isCompleted: {
+            type: Boolean,
+            default: false,
+        },
     },
     maintainanceWork: {
         details: [{
@@ -56,6 +77,11 @@ const dailyDiarySchema = {
             comments: String,
             imageUrl: String,
         }],
+        completedDate: Date,
+        isCompleted: {
+            type: Boolean,
+            default: false,
+        },
     },
     notes: String,//for the last attribute in farm where farmer or admin can note something about work done.
 }
