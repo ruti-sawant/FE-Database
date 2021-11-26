@@ -1,7 +1,7 @@
 {
   "name": "fe-database",
   "version": "1.0.0",
-  "description": "This is a FE databse for storing farmers data ",
+  "description": "This is a FE database for storing farmers data ",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"

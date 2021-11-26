@@ -11,7 +11,7 @@ const farmerSchema = {
             type: [String],
         },//in case of multiple contact numbers.
         email: String,
-        GCN: {
+        GGN: {
             required: true,
             type: String,
         },

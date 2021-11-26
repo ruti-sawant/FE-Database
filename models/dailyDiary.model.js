@@ -5,7 +5,7 @@ const dailyDiarySchema = {
         type: mongoose.Types.ObjectId,
         required: true,
     },
-    GCN: {
+    GGN: {
         type: String,
         required: true,
     },
@@ -71,7 +71,7 @@ const dailyDiarySchema = {
             default: false,
         },
     },
-    maintainanceWork: {
+    maintenanceWork: {
         details: [{
             item: String,
             comments: String,

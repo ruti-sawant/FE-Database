@@ -30,9 +30,9 @@ module.exports.getFarmerData = function (id, fields) {
 }
 
 
-module.exports.getFarmerDataUsingGCN = function (id, fields) {
+module.exports.getFarmerDataUsingGGN = function (id, fields) {
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.find({ "personalInformation.GCN": id }, fields)
+        Models.FarmerInfo.find({ "personalInformation.GGN": id }, fields)
             .then(resolve)
             .catch(reject);
     });
