@@ -118,6 +118,24 @@ router.get("/GGN/:gcnKey", (req, res) => {
         });
 });
 
+
+router.get("/MHCode/:MHCode", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    controllers.getFarmerUsingMHCode(req.params.MHCode, query)
+        .then((data) => {
+            // console.log(data);
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+})
+
 //supporting functions 
 function builtProjection(object) {
     for (let attribute in object) {

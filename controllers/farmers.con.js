@@ -38,6 +38,13 @@ module.exports.getFarmerDataUsingGGN = function (id, fields) {
     });
 }
 
+module.exports.getFarmerUsingMHCode = function (id, fields) {
+    return new Promise((resolve, reject) => {
+        Models.FarmerInfo.find({ "plots.farmInformation.MHCode": id }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
 
 module.exports.updateFarmer = function (id, data) {
     return new Promise((resolve, reject) => {
