@@ -20,6 +20,7 @@ const farmerSchema = {
             required: true,
         },
         farmMap: String,//to store my map link 
+        consultantName: String,
     },
     plots: [
         {
@@ -84,7 +85,6 @@ const farmerSchema = {
             other: {
                 tags: [String],//for filtering different farms from all farms
                 notes: String,
-                consultantName: String,
             },
             cropSpacing: {//distance in feet
                 betweenTwoRows: {
