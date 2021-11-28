@@ -84,6 +84,26 @@ router.patch("/:farmerId", (req, res) => {
         });
 })
 
+router.patch("/plots/:plotId", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    controllers.updatePlotOfFarmer(req.params.plotId, req.body.data)
+        .then((result) => {
+            console.log("plot patch result", result);
+            if (result.acknowledged && result.modifiedCount == 1)
+                res.status(200).send({ message: "Success" });
+            else {
+                res.status(400).send({ message: "failure" });
+            }
+        })
+        .catch((err) => {
+            console.log("plot patch err", err);
+            res.status(400).send({ message: err.message });
+        });
+});
+
 router.delete("/:farmerId", async (req, res) => {
     if (!validate(req.headers.apiid)) {
         res.status(401).send({ message: "Unauthosized request" });

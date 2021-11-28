@@ -56,6 +56,21 @@ module.exports.updateFarmer = function (id, data) {
     });
 }
 
+module.exports.updatePlotOfFarmer = function (_id, data) {
+    return new Promise((resolve, reject) => {
+        Models.FarmerInfo.updateOne({ "plots._id": _id }, {
+            $set: {
+                "plots.$.farmInformation": data.farmInformation,
+                "plots.$.address": data.address,
+                "plots.$.other": data.other,
+                "plots.$.cropSpacing": data.cropSpacing
+            }
+        })
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
 module.exports.deleteFarmer = function (id) {
     return new Promise((resolve, reject) => {
         Models.FarmerInfo.deleteOne({
