@@ -5,7 +5,8 @@ const filters = {
     MHCode: [String],
     GGN: [String],
     village: [String],
-    tag: [String]
+    tag: [String],
+    variety: [String]
 }
 
 
