@@ -100,6 +100,7 @@ const farmerSchema = {
     ]
 }
 
+//repetitive data that is changing yearly
 const seasonalFarmerDataSchema = {
     farmerId: {
         type: mongoose.Types.ObjectId,
@@ -109,6 +110,7 @@ const seasonalFarmerDataSchema = {
         type: String,
         required: true,
     },
+    GGN: String,
     year: {
         type: Number,
         required: true,

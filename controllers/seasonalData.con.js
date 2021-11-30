@@ -9,10 +9,10 @@ module.exports.getAllSeasonalData = function (fields) {
     })
 }
 
-module.exports.getFarmerSeasonalData = function (farmarId, fields) {
+module.exports.getFarmerSeasonalData = function (farmerId, fields) {
     return new Promise((resolve, reject) => {
         Models.SeasonalFarmerData.find({
-            farmerId: farmarId
+            farmerId: farmerId
         }, fields)
             .then(resolve)
             .catch(reject);

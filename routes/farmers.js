@@ -92,7 +92,7 @@ router.patch("/plots/:plotId", (req, res) => {
     controllers.updatePlotOfFarmer(req.params.plotId, req.body.data)
         .then((result) => {
             console.log("plot patch result", result);
-            if (result.acknowledged && result.modifiedCount == 1)
+            if (result.acknowledged)
                 res.status(200).send({ message: "Success" });
             else {
                 res.status(400).send({ message: "failure" });
