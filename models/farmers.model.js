@@ -106,7 +106,7 @@ const seasonalFarmerDataSchema = {
         type: mongoose.Types.ObjectId,
         required: true,
     },
-    MHCode: {
+    plotId: {//referring to object inside plots array of farmers.
         type: String,
         required: true,
     },

@@ -19,9 +19,19 @@ module.exports.getFarmerSeasonalData = function (farmerId, fields) {
     });
 }
 
-module.exports.getSeasonalData = function (id, fields) {
+module.exports.getPlotsSeasonalData = function (plotId, fields) {
     return new Promise((resolve, reject) => {
         Models.SeasonalFarmerData.find({
+            plotId: plotId
+        }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+module.exports.getSeasonalData = function (id, fields) {
+    return new Promise((resolve, reject) => {
+        Models.SeasonalFarmerData.findOne({
             _id: id
         }, fields)
             .then(resolve)

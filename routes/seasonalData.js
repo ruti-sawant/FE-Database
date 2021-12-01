@@ -64,6 +64,22 @@ router.get("/:farmerId/:seasonalDataId?", (req, res) => {
     }
 });
 
+router.get("/farmers/plots/:plotId", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    const plotId = req.params.plotId;
+    const query = builtProjection(req.query);
+    controllers.getPlotsSeasonalData(plotId, query)
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(400).send({ message: err.message });
+        });
+});
+
 router.post("/", (req, res) => {
     if (!validate(req.headers.apiid)) {
         res.status(401).send({ message: "Unauthosized request" });
