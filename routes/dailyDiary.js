@@ -31,6 +31,20 @@ router.get("/", (req, res) => {
         });
 });
 
+router.get("/MHCode/:MHCode", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    const query = builtProjection(req.query);
+    const MHCode = req.params.MHCode;
+    controllers.getMHCodeDiaries(MHCode, query)
+        .then((data) => {
+            res.status(200).send(data);
+        }).catch((err) => {
+            res.status(400).send({ message: err.message });
+        })
+})
 
 router.get("/:farmerId/:diaryId?", (req, res) => {
     if (!validate(req.headers.apiid)) {

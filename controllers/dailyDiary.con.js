@@ -34,13 +34,23 @@ module.exports.getDiary = function (diaryId, fields) {
             .catch(reject);
     });
 }
+
 module.exports.getFarmerDiaries = function (farmerId, fields) {
     return new Promise((resolve, reject) => {
-        console.log(farmerId);
+        console.log("farmerId", farmerId);
         Models.DailyDiary.find({ farmerId: farmerId }, fields)
             .then(resolve)
             .catch(reject);
     });
+}
+
+module.exports.getMHCodeDiaries = function (MHCode, fields) {
+    return new Promise((resolve, reject) => {
+        console.log("mhcode", MHCode);
+        Models.DailyDiary.find({ MHCode: MHCode }, fields)
+            .then(resolve)
+            .catch(reject);
+    })
 }
 
 module.exports.updateDiary = function (diaryId, data) {
