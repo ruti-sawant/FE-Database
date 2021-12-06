@@ -2,17 +2,6 @@ const mongoose = require("mongoose");
 const Models = require("../models/farmers.model.js");
 const FilterModel = require("../models/filter.model.js");
 
-module.exports.insertFarmer = function (farmer) {
-    return new Promise((resolve, reject) => {
-        const farmerObject = new Models.FarmerInfo(farmer);
-        farmerObject.save()
-            .then(resolve)
-            .catch(reject);
-    })
-}
-
-
-
 module.exports.getAllFarmersData = function (fields) {
     return new Promise((resolve, reject) => {
         Models.FarmerInfo.find({}, fields)
@@ -41,6 +30,40 @@ module.exports.getFarmerDataUsingGGN = function (id, fields) {
 module.exports.getFarmerUsingMHCode = function (id, fields) {
     return new Promise((resolve, reject) => {
         Models.FarmerInfo.find({ "plots.farmInformation.MHCode": id }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+module.exports.insertFarmer = function (farmer) {
+    try {
+        let MHCode = undefined;
+        if (farmer.plots && farmer.plots[0]) {
+            if (farmer.plots[0].farmInformation && farmer.plots[0].farmInformation.MHCode)
+                MHCode = farmer.plots[0].farmInformation.MHCode
+        }
+        updateFilters(farmer.personalInformation.name, farmer.personalInformation.GGN, MHCode, undefined, undefined, undefined);
+    } catch (err) {
+        console.log("Error in filter of insert of farmer", err);
+    }
+    return new Promise((resolve, reject) => {
+        const farmerObject = new Models.FarmerInfo(farmer);
+        farmerObject.save()
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+module.exports.insertPlotOfFarmer = function (farmerId, plot) {
+    try {
+        updateFilters(undefined, undefined, plot.farmInformation.MHCode, undefined, undefined, undefined);
+    } catch (err) {
+        console.log("Error in filter of insert of farmer", err);
+    }
+    return new Promise((resolve, reject) => {
+        Models.FarmerInfo.updateOne({ _id: farmerId }, {
+            $push: { plots: plot }
+        })
             .then(resolve)
             .catch(reject);
     });

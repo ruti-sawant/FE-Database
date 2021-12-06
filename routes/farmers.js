@@ -26,6 +26,7 @@ router.post("/", async (req, res) => {
             res.status(200).send({ message: `farmer inserted with ID ${farmer._id}` });
         })
         .catch((err) => {
+            console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -100,6 +101,27 @@ router.patch("/plots/:plotId", (req, res) => {
         })
         .catch((err) => {
             console.log("plot patch err", err);
+            res.status(400).send({ message: err.message });
+        });
+});
+
+router.patch("/newPlot/:farmerId", (req, res) => {
+    if (!validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    const farmerId = req.params.farmerId;
+    controllers.insertPlotOfFarmer(farmerId, req.body.data)
+        .then((result) => {
+            console.log("plot insert result", result);
+            if (result.acknowledged)
+                res.status(200).send({ message: "Success" });
+            else {
+                res.status(400).send({ message: "failure" });
+            }
+        })
+        .catch((err) => {
+            console.log("plot insert err", err);
             res.status(400).send({ message: err.message });
         });
 });

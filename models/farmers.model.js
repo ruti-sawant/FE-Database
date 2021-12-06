@@ -7,7 +7,7 @@ const farmerSchema = {
             type: String
         },
         mobileNumber: {
-            required: true,
+            // required: true,
             type: [String],
         },//in case of multiple contact numbers.
         email: String,
@@ -34,51 +34,51 @@ const farmerSchema = {
                     type: String,
                 },//starts with MH
                 crop: {
-                    required: true,
+                    // required: true,
                     type: String,
                 },
                 variety: {
-                    required: true,
+                    // required: true,
                     type: String,
                 },
                 soilType: {
-                    required: true,
+                    // required: true,
                     type: String,
                 },
                 plotArea: {
-                    required: true,
+                    // required: true,
                     type: Number
                 },//in acres
             },
             address: {//for storing address related information
                 coordinates: {
                     latitude: {
-                        required: true,
+                        // required: true,
                         type: String,
                     },
                     longitude: {
-                        required: true,
+                        // required: true,
                         type: String,
                     },
                 },
                 mapLink: {
                     type: String,
-                    required: true,
+                    // required: true,
                 },//to view that on map 
                 village: {
-                    required: true,
+                    // required: true,
                     type: String,
                 },
                 taluka: {
-                    required: true,
+                    // required: true,
                     type: String,
                 },
                 district: {
-                    required: true,
+                    // required: true,
                     type: String,
                 },
                 pincode: {
-                    required: true,
+                    // required: true,
                     type: Number,
                 },
             },
@@ -88,11 +88,11 @@ const farmerSchema = {
             },
             cropSpacing: {//distance in feet
                 betweenTwoRows: {
-                    required: true,
+                    // required: true,
                     type: Number,
                 },
                 betweenTwoCrops: {
-                    required: true,
+                    // required: true,
                     type: Number,
                 },
             },
