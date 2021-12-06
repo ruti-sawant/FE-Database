@@ -36,20 +36,23 @@ module.exports.getFarmerUsingMHCode = function (id, fields) {
 }
 
 module.exports.insertFarmer = function (farmer) {
-    try {
-        let MHCode = undefined;
-        if (farmer.plots && farmer.plots[0]) {
-            if (farmer.plots[0].farmInformation && farmer.plots[0].farmInformation.MHCode)
-                MHCode = farmer.plots[0].farmInformation.MHCode
-        }
-        updateFilters(farmer.personalInformation.name, farmer.personalInformation.GGN, MHCode, undefined, undefined, undefined);
-    } catch (err) {
-        console.log("Error in filter of insert of farmer", err);
-    }
+
     return new Promise((resolve, reject) => {
         const farmerObject = new Models.FarmerInfo(farmer);
         farmerObject.save()
-            .then(resolve)
+            .then(() => {
+                try {
+                    let MHCode = undefined;
+                    if (farmer.plots && farmer.plots[0]) {
+                        if (farmer.plots[0].farmInformation && farmer.plots[0].farmInformation.MHCode)
+                            MHCode = farmer.plots[0].farmInformation.MHCode
+                    }
+                    updateFilters(farmer.personalInformation.name, farmer.personalInformation.GGN, MHCode, undefined, undefined, undefined);
+                } catch (err) {
+                    console.log("Error in filter of insert of farmer", err);
+                }
+                resolve();
+            })
             .catch(reject);
     });
 }
