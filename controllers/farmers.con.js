@@ -58,11 +58,7 @@ module.exports.insertFarmer = function (farmer) {
 }
 
 module.exports.insertPlotOfFarmer = function (farmerId, plot) {
-    try {
-        updateFilters(undefined, undefined, plot.farmInformation.MHCode, undefined, undefined, undefined);
-    } catch (err) {
-        console.log("Error in filter of insert of farmer", err);
-    }
+
     return new Promise((resolve, reject) => {
         Models.FarmerInfo.updateOne({ _id: farmerId }, {
             $push: { plots: plot }

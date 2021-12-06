@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
     controllers.insertFarmer(req.body.data)
         .then((farmer) => {
             // console.log(farmer._id);
-            res.status(200).send({ message: `farmer inserted with ID ${farmer._id}` });
+            res.status(200).send({ message: 'farmer inserted with ID ' });
         })
         .catch((err) => {
             console.log(err);
