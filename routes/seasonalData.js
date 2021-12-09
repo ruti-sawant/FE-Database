@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSeasonalData, insertSeasonalData, updateSeasonalData, deleteSeasonalData, deleteFarmerSeasonalData } from "../controllers/seasonalData.con.js";
-import { middlewareAuthentication } from '../apiKey.js';
+import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
 router.get("/", middlewareAuthentication, (req, res) => {

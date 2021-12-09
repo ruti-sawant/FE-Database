@@ -19,7 +19,7 @@ function getKey() {
 export async function middlewareAuthentication(req, res, next) {
     //checks if apiid is valid or not if not sends back 401.
     if (! await validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
+        res.status(401).send({ message: "Unauthorized request" });
         return;
     }
     next();

@@ -3,7 +3,7 @@ const router = Router();
 
 // file to handle farmers router
 import { insertFarmer, getAllFarmersData, getFarmerData, updateFarmer, updatePlotOfFarmer, insertPlotOfFarmer, deleteFarmer, getFarmerDataUsingGGN, getFarmerUsingMHCode } from "../controllers/farmers.con.js";
-import { middlewareAuthentication } from '../apiKey.js';
+import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
 router.get("/", middlewareAuthentication, (req, res) => {
@@ -64,10 +64,10 @@ router.post("/", middlewareAuthentication, async (req, res) => {
     insertFarmer(req.body.data)
         .then((farmer) => {
             // console.log(farmer._id);
-            res.status(200).send({ message: 'farmer inserted with ID ' });
+            res.status(200).send({ message: 'farmer inserted successfully' });
         })
         .catch((err) => {
-            console.log(err);
+            // console.log(err);
             res.status(400).send({ message: err.message });
         });
 });

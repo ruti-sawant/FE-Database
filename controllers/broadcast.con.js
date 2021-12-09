@@ -14,12 +14,30 @@ export function getBroadcast(_id, fields) {
         Broadcast.findOne({ _id }, fields)
             .then(resolve)
             .catch(reject);
-    })
+    });
+}
+
+export function getBroadcastsForFarmer(farmerId, fields) {
+    return new Promise((resolve, reject) => {
+        Broadcast.find({}, fields)
+            .then((data) => {
+                const arrayToSend = [];
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].toAllFarmers)
+                        arrayToSend.push(data[i]);
+                    else {
+                        if (data[i].farmers.includes(farmerId))//if farmerId is present in farmers array then push it into output array
+                            arrayToSend.push(data[i]);
+                    }
+                }
+                resolve(arrayToSend);
+            })
+            .catch(reject);
+    });
 }
 
 //to map tags with farmers
 export async function getFarmersForTags(tags) {
-    console.log(tags);
     let resultSet = new Set();
     await FarmerInfo.find({})
         .then((data) => {
@@ -42,23 +60,18 @@ export async function getFarmersForTags(tags) {
     return Array.from(resultSet);
 }
 
-export function getBroadcastsForFarmer(farmerId, fields) {
-    return new Promise((resolve, reject) => {
-        Broadcast.find({}, fields)
-            .then((data) => {
-                const arrayToSend = [];
-                for (let i = 0; i < data.length; i++) {
-                    if (data[i].toAllFarmers)
-                        arrayToSend.push(data[i]);
-                    else {
-                        if (data[i].farmers.includes(farmerId))//if farmerId is present in farmers array then push it into output array
-                            arrayToSend.push(data[i]);
-                    }
-                }
-                resolve(arrayToSend);
-            })
-            .catch(reject);
-    });
+export async function getAllFarmersCount() {
+    let farmersCount = 0;
+    await FarmerInfo.find({}, { _id: 1 })
+        .then((data) => {
+            console.log("Data", data);
+            farmersCount = data.length;
+        })
+        .catch((err) => {
+            console.log("Error in counting farmers");
+            throw err;
+        });
+    return farmersCount;
 }
 
 export function insertBroadcast(broadcast) {

@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 import { getAllDiaries, getMHCodeDiaries, getDiary, getFarmerDiaries, insertDailyDiary, insertMultipleDailyDiaries, deleteDiary, deleteFarmerDiary, updateDiary } from "../controllers/dailyDiary.con.js";
-import { middlewareAuthentication } from '../apiKey.js';
+import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
 router.get("/", middlewareAuthentication, (req, res) => {

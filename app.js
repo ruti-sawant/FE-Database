@@ -21,7 +21,7 @@ app.use("/farmers", farmers);
 app.use("/dailyDiary", dailyDiary);
 app.use("/seasonalData", seasonalData);
 app.use("/filters", filters);
-app.use("/broadcast", broadcast);
+app.use("/broadcasts", broadcast);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

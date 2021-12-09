@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 import { getFilters } from "../controllers/filter.con.js";
-import { middlewareAuthentication } from '../apiKey.js';
+import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
 router.get("/", middlewareAuthentication, (req, res) => {
