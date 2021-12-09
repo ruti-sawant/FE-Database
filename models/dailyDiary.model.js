@@ -27,6 +27,7 @@ const dailyDiarySchema = {
             chemical: String,
             quantity: Number,
             imageUrl: String,
+            imageId: String,
         }],
         completedDate: Date,
         isCompleted: {
@@ -40,6 +41,7 @@ const dailyDiarySchema = {
             fertilizer: String,
             quantity: Number,
             imageUrl: String,
+            imageId: String,
         }],
         completedDate: Date,
         isCompleted: {
@@ -52,6 +54,7 @@ const dailyDiarySchema = {
             work: String,
             comments: String,
             imageUrl: String,
+            imageId: String,
         }],
         completedDate: Date,
         isCompleted: {
@@ -64,6 +67,7 @@ const dailyDiarySchema = {
             work: String,
             area: Number,//has to be confirmed because if client wants units then it is preferable to directly store string.
             imageUrl: String,
+            imageId: String,
         }],
         completedDate: Date,
         isCompleted: {
@@ -76,6 +80,7 @@ const dailyDiarySchema = {
             item: String,
             comments: String,
             imageUrl: String,
+            imageId: String,
         }],
         completedDate: Date,
         isCompleted: {
