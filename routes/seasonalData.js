@@ -1,26 +1,13 @@
-const express = require("express");
+import { Router } from "express";
+const router = Router();
 
-const router = express.Router();
+import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSeasonalData, insertSeasonalData, updateSeasonalData, deleteSeasonalData, deleteFarmerSeasonalData } from "../controllers/seasonalData.con.js";
+import { middlewareAuthentication } from '../apiKey.js';
+import { builtProjection } from '../supportiveFunctions.js';
 
-const controllers = require("../controllers/seasonalData.con.js");
-
-let apiKey;
-require("../apiKey.js").getKey()
-    .then((data) => {
-        apiKey = data[0].apiKey;
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
-
-router.get("/", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
-    controllers.getAllSeasonalData(query)
+    getAllSeasonalData(query)
         .then((data) => {
             res.status(200).send(data);
         })
@@ -29,11 +16,7 @@ router.get("/", (req, res) => {
         });
 });
 
-router.get("/:farmerId/:seasonalDataId?", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.get("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res) => {
     //to get data on basis of seasonalDataId 
     //for farmerId!=='data' I have to return considering farmerId is specified
     const query = builtProjection(req.query);
@@ -43,7 +26,7 @@ router.get("/:farmerId/:seasonalDataId?", (req, res) => {
     if (farmerId === 'data') {
         // if seasonalDataId is specified then only we fetch database
         if (seasonalDataId) {
-            controllers.getSeasonalData(seasonalDataId, query)
+            getSeasonalData(seasonalDataId, query)
                 .then((data) => {
                     res.status(200).send(data);
                 })
@@ -54,7 +37,7 @@ router.get("/:farmerId/:seasonalDataId?", (req, res) => {
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
-        controllers.getFarmerSeasonalData(farmerId, query)
+        getFarmerSeasonalData(farmerId, query)
             .then((data) => {
                 res.status(200).send(data);
             })
@@ -64,14 +47,10 @@ router.get("/:farmerId/:seasonalDataId?", (req, res) => {
     }
 });
 
-router.get("/farmers/plots/:plotId", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.get("/farmers/plots/:plotId", middlewareAuthentication, (req, res) => {
     const plotId = req.params.plotId;
     const query = builtProjection(req.query);
-    controllers.getPlotsSeasonalData(plotId, query)
+    getPlotsSeasonalData(plotId, query)
         .then((data) => {
             res.status(200).send(data);
         })
@@ -80,12 +59,8 @@ router.get("/farmers/plots/:plotId", (req, res) => {
         });
 });
 
-router.post("/", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.insertSeasonalData(req.body.data)
+router.post("/", middlewareAuthentication, (req, res) => {
+    insertSeasonalData(req.body.data)
         .then((data) => {
             res.status(200).send({ message: `seasonal Data inserted with ID ${data._id}` });
         })
@@ -94,13 +69,8 @@ router.post("/", (req, res) => {
         });
 });
 
-
-router.patch("/:id", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.updateSeasonalData(req.params.id, req.body.data)
+router.patch("/:id", middlewareAuthentication, (req, res) => {
+    updateSeasonalData(req.params.id, req.body.data)
         .then((result) => {
             console.log(result);
             if (result.acknowledged)
@@ -114,12 +84,7 @@ router.patch("/:id", (req, res) => {
         });
 });
 
-
-router.delete("/:farmerId/:seasonalDataId?", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res) => {
     //to get data on basis of seasonalDataId 
     //for farmerId!=='data' I have to return considering farmerId is specified
     const farmerId = req.params.farmerId;
@@ -128,7 +93,7 @@ router.delete("/:farmerId/:seasonalDataId?", (req, res) => {
     if (farmerId === 'data') {
         // if seasonalDataId is specified then only we fetch database
         if (seasonalDataId) {
-            controllers.deleteSeasonalData(seasonalDataId)
+            deleteSeasonalData(seasonalDataId)
                 .then((data) => {
                     if (data.deletedCount == 0)//no document exists
                         res.status(400).send({ message: "failure" });
@@ -142,7 +107,7 @@ router.delete("/:farmerId/:seasonalDataId?", (req, res) => {
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
-        controllers.deleteFarmerSeasonalData(farmerId)
+        deleteFarmerSeasonalData(farmerId)
             .then((data) => {
                 if (data.deletedCount == 0)//no document exists for farmer
                     res.status(400).send({ message: "failure" });
@@ -155,21 +120,4 @@ router.delete("/:farmerId/:seasonalDataId?", (req, res) => {
     }
 });
 
-
-//supporting functions 
-function builtProjection(object) {
-    for (let attribute in object) {
-        if (object[attribute] === '1') {
-            object[attribute] = 1;
-        } else {
-            delete object[attribute];// if value is not 1 then consider that query parameter as invalid
-        }
-    }
-    return object;
-}
-
-function validate(appId) {
-    return appId === apiKey;
-}
-
-module.exports = router;
+export default router;

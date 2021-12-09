@@ -1,61 +1,59 @@
-const mongoose = require("mongoose");
-const Models = require("../models/dailyDiary.model.js");
+import { DailyDiary } from "../models/dailyDiary.model.js";
 
-module.exports.insertDailyDiary = function (diary) {
+export function getAllDiaries(fields) {
     return new Promise((resolve, reject) => {
-        const diaryObject = new Models.DailyDiary(diary);
+        DailyDiary.find({}, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+export function getDiary(diaryId, fields) {
+    return new Promise((resolve, reject) => {
+        DailyDiary.findOne({ _id: diaryId }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+export function getFarmerDiaries(farmerId, fields) {
+    return new Promise((resolve, reject) => {
+        console.log("farmerId", farmerId);
+        DailyDiary.find({ farmerId: farmerId }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+export function getMHCodeDiaries(MHCode, fields) {
+    return new Promise((resolve, reject) => {
+        console.log("mhcode", MHCode);
+        DailyDiary.find({ MHCode: MHCode }, fields)
+            .then(resolve)
+            .catch(reject);
+    })
+}
+
+export function insertDailyDiary(diary) {
+    return new Promise((resolve, reject) => {
+        const diaryObject = new DailyDiary(diary);
         diaryObject.save()
             .then(resolve)
             .catch(reject);
     });
 }
 
-module.exports.insertMultipleDailyDiaries = function (diaries) {
+export function insertMultipleDailyDiaries(diaries) {
     return new Promise((resolve, reject) => {
-        Models.DailyDiary.insertMany(diaries)
+        DailyDiary.insertMany(diaries)
             .then(resolve)
             .catch(reject);
     })
 }
 
-module.exports.getAllDiaries = function (fields) {
+export function updateDiary(diaryId, data) {
     return new Promise((resolve, reject) => {
-        Models.DailyDiary.find({}, fields)
-            .then(resolve)
-            .catch(reject);
-    });
-}
-
-
-module.exports.getDiary = function (diaryId, fields) {
-    return new Promise((resolve, reject) => {
-        Models.DailyDiary.findOne({ _id: diaryId }, fields)
-            .then(resolve)
-            .catch(reject);
-    });
-}
-
-module.exports.getFarmerDiaries = function (farmerId, fields) {
-    return new Promise((resolve, reject) => {
-        console.log("farmerId", farmerId);
-        Models.DailyDiary.find({ farmerId: farmerId }, fields)
-            .then(resolve)
-            .catch(reject);
-    });
-}
-
-module.exports.getMHCodeDiaries = function (MHCode, fields) {
-    return new Promise((resolve, reject) => {
-        console.log("mhcode", MHCode);
-        Models.DailyDiary.find({ MHCode: MHCode }, fields)
-            .then(resolve)
-            .catch(reject);
-    })
-}
-
-module.exports.updateDiary = function (diaryId, data) {
-    return new Promise((resolve, reject) => {
-        Models.DailyDiary.updateOne({ _id: diaryId },
+        DailyDiary.updateOne({ _id: diaryId },
             { $set: data }
         )
             .then(resolve)
@@ -63,9 +61,9 @@ module.exports.updateDiary = function (diaryId, data) {
     });
 }
 
-module.exports.deleteDiary = function (diaryId) {
+export function deleteDiary(diaryId) {
     return new Promise((resolve, reject) => {
-        Models.DailyDiary.deleteOne({
+        DailyDiary.deleteOne({
             _id: diaryId
         })
             .then(resolve)
@@ -73,9 +71,9 @@ module.exports.deleteDiary = function (diaryId) {
     });
 }
 
-module.exports.deleteFarmerDiary = function (farmerId) {
+export function deleteFarmerDiary(farmerId) {
     return new Promise((resolve, reject) => {
-        Models.DailyDiary.deleteMany({
+        DailyDiary.deleteMany({
             farmerId: farmerId
         })
             .then(resolve)

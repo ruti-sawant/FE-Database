@@ -1,44 +1,43 @@
-const mongoose = require("mongoose");
-const Models = require("../models/farmers.model.js");
-const FilterModel = require("../models/filter.model.js");
+import { FarmerInfo } from "../models/farmers.model.js";
+import { Filter } from "../models/filter.model.js";
 
-module.exports.getAllFarmersData = function (fields) {
+export function getAllFarmersData(fields) {
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.find({}, fields)
+        FarmerInfo.find({}, fields)
             .then(resolve)
             .catch(reject);
     });
 }
 
-module.exports.getFarmerData = function (id, fields) {
+export function getFarmerData(id, fields) {
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.findById(id, fields)
+        FarmerInfo.findById(id, fields)
             .then(resolve)
             .catch(reject);
     })
 }
 
 
-module.exports.getFarmerDataUsingGGN = function (id, fields) {
+export function getFarmerDataUsingGGN(GGN, fields) {
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.find({ "personalInformation.GGN": id }, fields)
+        FarmerInfo.find({ "personalInformation.GGN": GGN }, fields)
             .then(resolve)
             .catch(reject);
     });
 }
 
-module.exports.getFarmerUsingMHCode = function (id, fields) {
+export function getFarmerUsingMHCode(MHCode, fields) {
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.find({ "plots.farmInformation.MHCode": id }, fields)
+        FarmerInfo.find({ "plots.farmInformation.MHCode": MHCode }, fields)
             .then(resolve)
             .catch(reject);
     });
 }
 
-module.exports.insertFarmer = function (farmer) {
+export function insertFarmer(farmer) {
 
     return new Promise((resolve, reject) => {
-        const farmerObject = new Models.FarmerInfo(farmer);
+        const farmerObject = new FarmerInfo(farmer);
         farmerObject.save()
             .then(() => {
                 try {
@@ -57,10 +56,10 @@ module.exports.insertFarmer = function (farmer) {
     });
 }
 
-module.exports.insertPlotOfFarmer = function (farmerId, plot) {
+export function insertPlotOfFarmer(farmerId, plot) {
 
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.updateOne({ _id: farmerId }, {
+        FarmerInfo.updateOne({ _id: farmerId }, {
             $push: { plots: plot }
         })
             .then(() => {
@@ -75,14 +74,14 @@ module.exports.insertPlotOfFarmer = function (farmerId, plot) {
     });
 }
 
-module.exports.updateFarmer = function (id, data) {
+export function updateFarmer(id, data) {
     try {
         updateFilters(data.personalInformation.name, data.personalInformation.GGN);
     } catch (err) {
         console.log("Error in filter of update farmer", err);
     }
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.updateOne({ _id: id },
+        FarmerInfo.updateOne({ _id: id },
             { $set: data }
         )
             .then(resolve)
@@ -90,14 +89,14 @@ module.exports.updateFarmer = function (id, data) {
     });
 }
 
-module.exports.updatePlotOfFarmer = function (_id, data) {
+export function updatePlotOfFarmer(_id, data) {
     try {
         updateFilters(undefined, undefined, data.farmInformation.MHCode, data.address.village, data.other.tags, data.farmInformation.variety);
     } catch (err) {
         console.log("Error in filter of update plot of farmer", err);
     }
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.updateOne({ "plots._id": _id }, {
+        FarmerInfo.updateOne({ "plots._id": _id }, {
             $set: {
                 "plots.$.farmInformation": data.farmInformation,
                 "plots.$.address": data.address,
@@ -110,9 +109,9 @@ module.exports.updatePlotOfFarmer = function (_id, data) {
     });
 }
 
-module.exports.deleteFarmer = function (id) {
+export function deleteFarmer(id) {
     return new Promise((resolve, reject) => {
-        Models.FarmerInfo.deleteOne({
+        FarmerInfo.deleteOne({
             _id: id
         })
             .then(resolve)
@@ -122,11 +121,11 @@ module.exports.deleteFarmer = function (id) {
 
 async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variety) {
     try {
-        FilterModel.Filter.findOne({})
+        Filter.findOne({})
             .then((data) => {
                 if (farmerName && farmerName !== "") {
                     if (!data.farmerName.includes(farmerName)) {
-                        FilterModel.Filter.updateOne({}, {
+                        Filter.updateOne({}, {
                             $push: {
                                 farmerName
                             }
@@ -142,7 +141,7 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     }
                 } if (MHCode && MHCode !== "") {
                     if (!data.MHCode.includes(MHCode)) {
-                        FilterModel.Filter.updateOne({}, {
+                        Filter.updateOne({}, {
                             $push: {
                                 MHCode
                             }
@@ -158,7 +157,7 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     }
                 } if (GGN && GGN !== "") {
                     if (!data.GGN.includes(GGN)) {
-                        FilterModel.Filter.updateOne({}, {
+                        Filter.updateOne({}, {
                             $push: {
                                 GGN
                             }
@@ -175,7 +174,7 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     }
                 } if (village && village !== "") {
                     if (!data.village.includes(village)) {
-                        FilterModel.Filter.updateOne({}, {
+                        Filter.updateOne({}, {
                             $push: {
                                 village
                             }
@@ -198,7 +197,7 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                         }
                     }
                     console.log("unique array in filterTags", uniqueTagsArray);
-                    FilterModel.Filter.updateOne({}, {
+                    Filter.updateOne({}, {
                         $push: {
                             tag: { $each: uniqueTagsArray }
                         }
@@ -212,7 +211,7 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                 } if (variety && variety !== "") {
                     console.log(data.variety);
                     if (!data.variety.includes(variety)) {
-                        FilterModel.Filter.updateOne({}, {
+                        Filter.updateOne({}, {
                             $push: {
                                 variety
                             }

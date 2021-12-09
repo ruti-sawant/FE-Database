@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const apiKeySchema = {
     apiKey: {
@@ -6,19 +6,36 @@ const apiKeySchema = {
         required: true,
     }
 }
-
 const ApiKey = mongoose.model("apiKey", apiKeySchema);
 
-module.exports.getKey = async function () {
+function getKey() {
     return new Promise((resolve, reject) => {
         ApiKey.find({})
             .then(resolve)
             .catch(reject);
     });
-    // try {
-    //     const data = await ApiKey.find({});
-    //     return data[0].apiKey;
-    // } catch (err) {
-    //     console.log(err);
-    // }
+}
+
+export async function middlewareAuthentication(req, res, next) {
+    //checks if apiid is valid or not if not sends back 401.
+    if (! await validate(req.headers.apiid)) {
+        res.status(401).send({ message: "Unauthosized request" });
+        return;
+    }
+    next();
+}
+
+export default middlewareAuthentication;
+
+//supportive function
+async function validate(appId) {
+    let apiKey;
+    await getKey()
+        .then((data) => {
+            apiKey = data[0].apiKey;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    return appId === apiKey;
 }

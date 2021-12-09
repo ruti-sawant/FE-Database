@@ -1,35 +1,19 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
-const controllers = require("../controllers/filter.con.js");
+import { getFilters } from "../controllers/filter.con.js";
+import { middlewareAuthentication } from '../apiKey.js';
+import { builtProjection } from '../supportiveFunctions.js';
 
-let apiKey;
-require("../apiKey.js").getKey()
-    .then((data) => {
-        apiKey = data[0].apiKey;
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
-router.get("/", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.getFilters()
+router.get("/", middlewareAuthentication, (req, res) => {
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    getFilters(query)
         .then((data) => {
-            // console.log(data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            // console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
 
-function validate(appId) {
-    return appId === apiKey;
-}
-
-module.exports = router;
+export default router;

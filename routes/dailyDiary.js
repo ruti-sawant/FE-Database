@@ -1,26 +1,14 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
-const controllers = require("../controllers/dailyDiary.con.js");
+import { getAllDiaries, getMHCodeDiaries, getDiary, getFarmerDiaries, insertDailyDiary, insertMultipleDailyDiaries, deleteDiary, deleteFarmerDiary, updateDiary } from "../controllers/dailyDiary.con.js";
+import { middlewareAuthentication } from '../apiKey.js';
+import { builtProjection } from '../supportiveFunctions.js';
 
-let apiKey;
-require("../apiKey.js").getKey()
-    .then((data) => {
-        apiKey = data[0].apiKey;
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
-
-router.get("/", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
 
-    controllers.getAllDiaries(query)
+    getAllDiaries(query)
         .then((data) => {
             // console.log(data);
             res.status(200).send(data);
@@ -31,14 +19,11 @@ router.get("/", (req, res) => {
         });
 });
 
-router.get("/MHCode/:MHCode", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
+
     const MHCode = req.params.MHCode;
-    controllers.getMHCodeDiaries(MHCode, query)
+    getMHCodeDiaries(MHCode, query)
         .then((data) => {
             res.status(200).send(data);
         }).catch((err) => {
@@ -46,11 +31,7 @@ router.get("/MHCode/:MHCode", (req, res) => {
         })
 })
 
-router.get("/:farmerId/:diaryId?", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.get("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
 
     const farmerId = req.params.farmerId;
@@ -58,7 +39,7 @@ router.get("/:farmerId/:diaryId?", (req, res) => {
     if (farmerId === 'data') {
         // if dairyId is specified then only we fetch database
         if (diaryId) {
-            controllers.getDiary(diaryId, query)
+            getDiary(diaryId, query)
                 .then((data) => {
                     res.status(200).send(data);
                 })
@@ -69,7 +50,7 @@ router.get("/:farmerId/:diaryId?", (req, res) => {
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
-        controllers.getFarmerDiaries(farmerId, query)
+        getFarmerDiaries(farmerId, query)
             .then((data) => {
                 res.status(200).send(data);
             })
@@ -79,12 +60,8 @@ router.get("/:farmerId/:diaryId?", (req, res) => {
     }
 });
 
-router.post("/", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.insertDailyDiary(req.body.data)
+router.post("/", middlewareAuthentication, (req, res) => {
+    insertDailyDiary(req.body.data)
         .then((data) => {
             res.status(200).send({ message: `dairy inserted with ID ${data._id}` });
         })
@@ -93,12 +70,8 @@ router.post("/", (req, res) => {
         })
 });
 
-router.post("/all", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.insertMultipleDailyDiaries(req.body.data)
+router.post("/all", middlewareAuthentication, (req, res) => {
+    insertMultipleDailyDiaries(req.body.data)
         .then((data) => {
             res.status(200).send({ message: "All diaries inserted" });
         })
@@ -106,55 +79,10 @@ router.post("/all", (req, res) => {
             console.log("err", err);
             res.status(400).send({ message: err.message });
         })
-})
-
-router.delete("/:farmerId/:diaryId?", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    //to get data on basis of diaryId 
-    //for farmerId!=='data' I have to return considering farmerId is specified
-    const farmerId = req.params.farmerId;
-    const diaryId = req.params.diaryId;
-
-    if (farmerId === 'data') {
-        // if seasonalDataId is specified then only we fetch database
-        if (diaryId) {
-            controllers.deleteDiary(diaryId)
-                .then((data) => {
-                    if (data.deletedCount == 0)//no document exists
-                        res.status(400).send({ message: "failure" });
-                    else
-                        res.status(200).send({ message: "success" });
-                })
-                .catch((err) => {
-                    res.status(400).send({ message: err.message });
-                });
-        } else {
-            res.status(404).send({ message: "invalid route specified" });
-        }
-    } else {
-        controllers.deleteFarmerDiary(farmerId)
-            .then((data) => {
-                if (data.deletedCount == 0)//no document exists for farmer
-                    res.status(400).send({ message: "failure" });
-                else
-                    res.status(200).send({ message: "success" });
-            })
-            .catch((err) => {
-                res.status(400).send({ message: err.message });
-            })
-    }
 });
 
-
-router.patch("/:id", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.updateDiary(req.params.id, req.body.data)
+router.patch("/:id", middlewareAuthentication, (req, res) => {
+    updateDiary(req.params.id, req.body.data)
         .then((result) => {
             console.log(result);
             if (result.acknowledged)
@@ -168,20 +96,41 @@ router.patch("/:id", (req, res) => {
         });
 });
 
-//supporting functions 
-function builtProjection(object) {
-    for (let attribute in object) {
-        if (object[attribute] === '1') {
-            object[attribute] = 1;
+router.delete("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
+    //to get data on basis of diaryId 
+    //for farmerId!=='data' I have to build logic considering farmerId is specified
+    const farmerId = req.params.farmerId;
+    const diaryId = req.params.diaryId;
+
+    if (farmerId === 'data') {
+        // if seasonalDataId is specified then only we fetch database
+        if (diaryId) {
+            deleteDiary(diaryId)
+                .then((data) => {
+                    if (data.deletedCount == 0)//no document exists
+                        res.status(400).send({ message: "failure" });
+                    else
+                        res.status(200).send({ message: "success" });
+                })
+                .catch((err) => {
+                    res.status(400).send({ message: err.message });
+                });
         } else {
-            delete object[attribute];// if value is not 1 then consider that query parameter as invalid
+            res.status(404).send({ message: "invalid route specified" });
         }
+    } else {
+        deleteFarmerDiary(farmerId)
+            .then((data) => {
+                if (data.deletedCount == 0)//no document exists for farmer
+                    res.status(400).send({ message: "failure" });
+                else
+                    res.status(200).send({ message: "success" });
+            })
+            .catch((err) => {
+                res.status(400).send({ message: err.message });
+            })
     }
-    return object;
-}
+});
 
-function validate(appId) {
-    return appId === apiKey;
-}
 
-module.exports = router;
+export default router;

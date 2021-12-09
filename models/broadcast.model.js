@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from 'mongoose';
 const broadcastSchema = {
     topic: String,
     category: String,
@@ -38,4 +37,6 @@ const broadcastSchema = {
     tags: [String],
 }
 
-module.exports.Broadcast = mongoose.model("broadcast", broadcastSchema);
+export const Broadcast = mongoose.model("broadcast", broadcastSchema);
+
+export default Broadcast;

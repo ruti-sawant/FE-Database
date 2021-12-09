@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "This is a FE database for storing farmers data ",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "node app.js"
   },
   "author": "Rutikesh Sawant",
   "license": "ISC",
   "engines": {
-    "node": "14.17.6"
+    "node": "16.13.0"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

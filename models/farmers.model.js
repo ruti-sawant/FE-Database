@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const farmerSchema = {
     personalInformation: {
@@ -146,6 +146,7 @@ const seasonalFarmerDataSchema = {
     quality: String,
 }
 
-module.exports.FarmerInfo = mongoose.model("farmer", farmerSchema);
-module.exports.SeasonalFarmerData = mongoose.model("seasonalData", seasonalFarmerDataSchema);
+export const FarmerInfo = mongoose.model("farmer", farmerSchema);
+export const SeasonalFarmerData = mongoose.model("seasonalData", seasonalFarmerDataSchema);
 
+export default FarmerInfo;

@@ -1,13 +1,9 @@
-const mongoose = require("mongoose");
-const Model = require("../models/filter.model.js");
+import { Filter } from "../models/filter.model.js";
 
-module.exports.insertFarmerName = function (farmerName) {
 
-}
-
-module.exports.getFilters = function () {
+export function getFilters(fields) {
     return new Promise((resolve, reject) => {
-        Model.Filter.find()
+        Filter.find({}, fields)
             .then(resolve)
             .catch(reject);
     });

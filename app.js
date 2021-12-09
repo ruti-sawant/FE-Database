@@ -1,25 +1,27 @@
-const express = require("express");
-const dotenv = require("dotenv").config();
-
+import express, { json } from "express";
+import dotenv from 'dotenv';
+dotenv.config();
 const app = express();
 
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-mongoose.connect(process.env.URL + '/' + process.env.DB_NAME);
+mongoose.connect(process.env.URL + '/' + process.env.DB_NAME)
+    .then(() => console.log("Connected to Database"))
+    .catch(() => console.log("Error in connecting to database"));
 
-const farmers = require("./routes/farmers.js");
-const dailyDiary = require("./routes/dailyDiary.js");
-const seasonalData = require("./routes/seasonalData.js");
-const filters = require("./routes/filters");
-const broadcast = require("./routes/broadcast");
+import farmers from "./routes/farmers.js";
+import dailyDiary from "./routes/dailyDiary.js";
+import seasonalData from "./routes/seasonalData.js";
+import filters from "./routes/filters.js";
+import broadcast from "./routes/broadcast.js";
 
-
-app.use(express.json());//to access data in raw query (postman).
+app.use(json());//to access data in raw query (postman).
 
 app.use("/farmers", farmers);
 app.use("/dailyDiary", dailyDiary);
 app.use("/seasonalData", seasonalData);
 app.use("/filters", filters);
+app.use("/broadcast", broadcast);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

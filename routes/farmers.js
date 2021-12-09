@@ -1,26 +1,67 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
 // file to handle farmers router
+import { insertFarmer, getAllFarmersData, getFarmerData, updateFarmer, updatePlotOfFarmer, insertPlotOfFarmer, deleteFarmer, getFarmerDataUsingGGN, getFarmerUsingMHCode } from "../controllers/farmers.con.js";
+import { middlewareAuthentication } from '../apiKey.js';
+import { builtProjection } from '../supportiveFunctions.js';
 
-const controllers = require("../controllers/farmers.con.js");
+router.get("/", middlewareAuthentication, (req, res) => {
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    // console.log(query);
+    getAllFarmersData(query)
+        .then((data) => {
+            // console.log(data);
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+});
 
-let apiKey;
-require("../apiKey.js").getKey()
-    .then((data) => {
-        apiKey = data[0].apiKey;
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+router.get("/:farmerId", middlewareAuthentication, async (req, res) => {
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    // console.log(query);
+    getFarmerData(req.params.farmerId, query)
+        .then((data) => {
+            // console.log(data);
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+});
 
+router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    getFarmerUsingMHCode(req.params.MHCode, query)
+        .then((data) => {
+            // console.log(data);
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+});
 
-router.post("/", async (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.insertFarmer(req.body.data)
+router.get("/GGN/:gcnKey", middlewareAuthentication, (req, res) => {
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    getFarmerDataUsingGGN(req.params.gcnKey, query)
+        .then((data) => {
+            // console.log(data);
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+});
+
+router.post("/", middlewareAuthentication, async (req, res) => {
+    insertFarmer(req.body.data)
         .then((farmer) => {
             // console.log(farmer._id);
             res.status(200).send({ message: 'farmer inserted with ID ' });
@@ -31,48 +72,8 @@ router.post("/", async (req, res) => {
         });
 });
 
-router.get("/", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    const query = builtProjection(req.query);//building query to return only specific parts of data
-    // console.log(query);
-    controllers.getAllFarmersData(query)
-        .then((data) => {
-            // console.log(data);
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            // console.log(err);
-            res.status(400).send({ message: err.message });
-        });
-});
-
-router.get("/:farmerId", async (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    const query = builtProjection(req.query);//building query to return only specific parts of data
-    // console.log(query);
-    controllers.getFarmerData(req.params.farmerId, query)
-        .then((data) => {
-            // console.log(data);
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            // console.log(err);
-            res.status(400).send({ message: err.message });
-        });
-});
-
-router.patch("/:farmerId", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.updateFarmer(req.params.farmerId, req.body.data)
+router.patch("/:farmerId", middlewareAuthentication, (req, res) => {
+    updateFarmer(req.params.farmerId, req.body.data)
         .then((result) => {
             if (result.acknowledged)
                 res.status(200).send({ message: "Success" });
@@ -85,12 +86,8 @@ router.patch("/:farmerId", (req, res) => {
         });
 })
 
-router.patch("/plots/:plotId", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.updatePlotOfFarmer(req.params.plotId, req.body.data)
+router.patch("/plots/:plotId", middlewareAuthentication, (req, res) => {
+    updatePlotOfFarmer(req.params.plotId, req.body.data)
         .then((result) => {
             console.log("plot patch result", result);
             if (result.acknowledged)
@@ -105,13 +102,9 @@ router.patch("/plots/:plotId", (req, res) => {
         });
 });
 
-router.patch("/newPlot/:farmerId", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
+router.patch("/newPlot/:farmerId", middlewareAuthentication, (req, res) => {
     const farmerId = req.params.farmerId;
-    controllers.insertPlotOfFarmer(farmerId, req.body.data)
+    insertPlotOfFarmer(farmerId, req.body.data)
         .then((result) => {
             console.log("plot insert result", result);
             if (result.acknowledged)
@@ -126,12 +119,8 @@ router.patch("/newPlot/:farmerId", (req, res) => {
         });
 });
 
-router.delete("/:farmerId", async (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    controllers.deleteFarmer(req.params.farmerId)
+router.delete("/:farmerId", middlewareAuthentication, async (req, res) => {
+    deleteFarmer(req.params.farmerId)
         .then((data) => {
             if (data.deletedCount == 1)
                 res.status(200).send({ message: "success" });
@@ -143,55 +132,4 @@ router.delete("/:farmerId", async (req, res) => {
         })
 });
 
-router.get("/GGN/:gcnKey", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    const query = builtProjection(req.query);//building query to return only specific parts of data
-    controllers.getFarmerDataUsingGGN(req.params.gcnKey, query)
-        .then((data) => {
-            // console.log(data);
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            // console.log(err);
-            res.status(400).send({ message: err.message });
-        });
-});
-
-
-router.get("/MHCode/:MHCode", (req, res) => {
-    if (!validate(req.headers.apiid)) {
-        res.status(401).send({ message: "Unauthosized request" });
-        return;
-    }
-    const query = builtProjection(req.query);//building query to return only specific parts of data
-    controllers.getFarmerUsingMHCode(req.params.MHCode, query)
-        .then((data) => {
-            // console.log(data);
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            // console.log(err);
-            res.status(400).send({ message: err.message });
-        });
-})
-
-//supporting functions 
-function builtProjection(object) {
-    for (let attribute in object) {
-        if (object[attribute] === '1') {
-            object[attribute] = 1;
-        } else {
-            delete object[attribute];// if value is not 1 then consider that query parameter as invalid
-        }
-    }
-    return object;
-}
-
-function validate(appId) {
-    return appId === apiKey;
-}
-
-module.exports = router;
+export default router;

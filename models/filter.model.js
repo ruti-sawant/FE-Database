@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const filters = {
     farmerName: [String],
@@ -10,4 +10,6 @@ const filters = {
 }
 
 
-module.exports.Filter = mongoose.model("filter", filters);
+export const Filter = mongoose.model("filter", filters);
+
+export default Filter;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const dailyDiarySchema = {
     farmerId: {
@@ -86,4 +86,6 @@ const dailyDiarySchema = {
     notes: String,//for the last attribute in farm where farmer or admin can note something about work done.
 }
 
-module.exports.DailyDiary = mongoose.model("dailyDiary", dailyDiarySchema);
+export const DailyDiary = mongoose.model("dailyDiary", dailyDiarySchema);
+
+export default DailyDiary;
