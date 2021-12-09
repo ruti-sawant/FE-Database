@@ -11,7 +11,7 @@ const farmers = require("./routes/farmers.js");
 const dailyDiary = require("./routes/dailyDiary.js");
 const seasonalData = require("./routes/seasonalData.js");
 const filters = require("./routes/filters");
-
+const broadcast = require("./routes/broadcast");
 
 
 app.use(express.json());//to access data in raw query (postman).
