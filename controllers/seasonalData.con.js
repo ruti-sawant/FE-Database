@@ -10,9 +10,7 @@ export function getAllSeasonalData(fields) {
 
 export function getFarmerSeasonalData(farmerId, fields) {
     return new Promise((resolve, reject) => {
-        SeasonalFarmerData.find({
-            farmerId: farmerId
-        }, fields)
+        SeasonalFarmerData.find({ farmerId }, fields)
             .then(resolve)
             .catch(reject);
     });
@@ -20,9 +18,15 @@ export function getFarmerSeasonalData(farmerId, fields) {
 
 export function getPlotsSeasonalData(plotId, fields) {
     return new Promise((resolve, reject) => {
-        SeasonalFarmerData.find({
-            plotId: plotId
-        }, fields)
+        SeasonalFarmerData.find({ plotId }, fields)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+export function getMHCodeSeasonalData(MHCode, fields) {
+    return new Promise((resolve, reject) => {
+        SeasonalFarmerData.find({ MHCode }, fields)
             .then(resolve)
             .catch(reject);
     });

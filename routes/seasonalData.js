@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSeasonalData, insertSeasonalData, updateSeasonalData, deleteSeasonalData, deleteFarmerSeasonalData } from "../controllers/seasonalData.con.js";
+import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSeasonalData, insertSeasonalData, updateSeasonalData, deleteSeasonalData, deleteFarmerSeasonalData, getMHCodeSeasonalData } from "../controllers/seasonalData.con.js";
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
@@ -51,6 +51,18 @@ router.get("/farmers/plots/:plotId", middlewareAuthentication, (req, res) => {
     const plotId = req.params.plotId;
     const query = builtProjection(req.query);
     getPlotsSeasonalData(plotId, query)
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(400).send({ message: err.message });
+        });
+});
+
+router.get("/farmers/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
+    const MHCode = req.params.MHCode;
+    const query = builtProjection(req.query);
+    getMHCodeSeasonalData(MHCode, query)
         .then((data) => {
             res.status(200).send(data);
         })

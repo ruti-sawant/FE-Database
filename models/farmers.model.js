@@ -110,6 +110,10 @@ const seasonalFarmerDataSchema = {
         type: String,
         required: true,
     },
+    MHCode: {
+        type: String,
+        required: true,
+    },
     GGN: String,
     year: {
         type: Number,
