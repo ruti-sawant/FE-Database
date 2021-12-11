@@ -6,6 +6,7 @@ const broadcastSchema = {
     description: String,
     format: String,
     link: String,
+    driveId: String,
     analytics: {
         numberOfRecipients: {
             type: Number,
