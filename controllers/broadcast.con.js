@@ -1,5 +1,28 @@
+import { google } from "googleapis";
+import dotenv from 'dotenv'
+dotenv.config();
+
 import { Broadcast } from "../models/broadcast.model.js";
 import { FarmerInfo } from "../models/farmers.model.js";
+import Filter from "../models/filter.model.js";
+
+
+const clientID = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRETE;
+const redirectUri = process.env.REDIRECT_URI;
+const refreshToken = process.env.REFRESH_TOKEN;
+
+const oauth2Client = new google.auth.OAuth2(
+    clientID,
+    clientSecret,
+    redirectUri
+);
+oauth2Client.setCredentials({ refresh_token: refreshToken });
+
+const drive = google.drive({
+    version: 'v3',
+    auth: oauth2Client,
+});
 
 export function getAllBroadcasts(fields) {
     return new Promise((resolve, reject) => {
@@ -77,8 +100,14 @@ export async function getAllFarmersCount() {
 export function insertBroadcast(broadcast) {
     return new Promise((resolve, reject) => {
         const broadcastObject = new Broadcast(broadcast);
+        const newCategory = { ...broadcast }.newCategory;
+        if (newCategory)
+            delete broadcast.newCategory;
         broadcastObject.save()
-            .then(resolve)
+            .then((data) => {
+                updateFilters(newCategory);
+                resolve(data);
+            })
             .catch(reject);
     });
 }
@@ -109,8 +138,56 @@ export function updateAnswer(_id, chatId, adminName, answer) {
 
 export function deleteBroadcast(_id) {
     return new Promise((resolve, reject) => {
-        Broadcast.deleteOne({ _id })
-            .then(resolve)
+        Broadcast.findByIdAndDelete(_id)
+            .then((data) => {
+                if (data.driveId) {
+                    deleteFileFromDrive(data.driveId);
+                }
+                resolve(data);
+            })
             .catch(reject);
     });
+}
+
+async function deleteFileFromDrive(fileId) {
+    drive.files.delete({
+        'fileId': fileId
+    })
+        .then((res) => {
+            // console.log(res);
+            console.log("file deleted ", fileId);
+        }).catch((err) => {
+            console.log(err);
+        })
+}
+
+async function updateFilters(category) {
+    try {
+        Filter.findOne({})
+            .then((data) => {
+                console.log(data.broadcastCategory);
+                if (category && category !== "") {
+                    if (!data.broadcastCategory.includes(category)) {
+                        Filter.updateOne({}, {
+                            $push: {
+                                broadcastCategory: category
+                            }
+                        })
+                            .then((data) => {
+                                console.log("category Updated Successfully");
+                            })
+                            .catch((err) => {
+                                console.log("filter category", err);
+                            })
+                    } else {
+                        console.log("filter category already");
+                    }
+                }
+            })
+            .catch((err) => {
+                console.log("Error in inserting FilterData", err);
+            });
+    } catch (err) {
+        console.log("Error in updating filter ", err);
+    }
 }

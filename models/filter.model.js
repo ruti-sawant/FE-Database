@@ -6,7 +6,8 @@ const filters = {
     GGN: [String],
     village: [String],
     tag: [String],
-    variety: [String]
+    variety: [String],
+    broadcastCategory: [String]
 }
 
 
