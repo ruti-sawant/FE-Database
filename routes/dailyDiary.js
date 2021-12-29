@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import { getAllDiaries, getMHCodeDiaries, getDiary, getFarmerDiaries, insertDailyDiary, insertMultipleDailyDiaries, deleteDiary, deleteFarmerDiary, updateDiary } from "../controllers/dailyDiary.con.js";
+import { getAllDiaries, getMHCodeDiaries, getDiary, getFarmerDiaries, insertDailyDiary, insertMultipleDailyDiaries, deleteDiary, deleteFarmerDiary, updateDiary, markDiaryAsComplete } from "../controllers/dailyDiary.con.js";
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
@@ -94,6 +94,21 @@ router.patch("/:id", middlewareAuthentication, (req, res) => {
         .catch((err) => {
             res.status(400).send({ message: err.message });
         });
+});
+
+router.patch("/markComplete/:id", middlewareAuthentication, (req, res) => {
+    if (req.body.data) {
+        markDiaryAsComplete(req.params.id, req.body.data)
+            .then((result) => {
+                console.log(result);
+                res.status(200).send({ message: "Diary " + req.body.data.type + " completed successfully" });
+            })
+            .catch((err) => {
+                res.status(400).send({ message: err.message });
+            });
+    } else {
+        res.status(400).send({ message: "Data is insufficient for updating" });
+    }
 });
 
 router.delete("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {

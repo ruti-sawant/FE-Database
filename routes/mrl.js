@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 import middlewareAuthentication from "../authentication.js";
-import { deleteReport, deleteReportForPlot, deleteReportForPlotAndYear, getAllApprovedChemicals, getAllBannedChemicals, getAllMrlReports, getMrlReport, getMRlReportByMHCode, getMRLReportBySampleNumber, insertReport, updateAllApprovedChemicals, updateAllBannedChemicals } from "../controllers/mrl.con.js";
+import { deleteReport, deleteReportForPlot, deleteReportForPlotAndYear, getAllApprovedChemicals, getAllBannedChemicals, getAllMrlReports, getMrlReport, getMRlReportByMHCode, getMRLReportBySampleNumber, insertMultipleReports, insertReport, updateAllApprovedChemicals, updateAllBannedChemicals } from "../controllers/mrl.con.js";
 import { builtProjection } from "../supportiveFunctions.js";
 
 //methods for MRL Reports.
@@ -67,6 +67,20 @@ router.post("/", middlewareAuthentication, (req, res) => {
         .then((data) => {
             console.log(data);
             res.status(200).send({ message: "Report inserted successfully" });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+});
+
+//to add multiple reports at same time.
+router.post("/postAll", middlewareAuthentication, (req, res) => {
+    const data = req.body.data;
+    insertMultipleReports(data)
+        .then((data) => {
+            console.log(data);
+            res.status(200).send({ message: "Reports inserted successfully" });
         })
         .catch((err) => {
             console.log(err);

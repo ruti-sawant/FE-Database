@@ -63,6 +63,52 @@ export function insertReport(mrl) {
     });
 }
 
+
+
+export function insertMultipleReports(mrlReports) {
+    return new Promise(async (resolve, reject) => {
+        let bannedChemicals = [];
+        await BannedChemicalsModel.find({})
+            .then((data) => {
+                bannedChemicals = data;
+            })
+            .catch((err) => {
+                reject(err);
+                return;
+            });
+        MrlReportModel.find({})
+            .then((mrlFromDatabase) => {
+                bannedChemicals.sort((a, b) => { return a.srNo - b.srNo; });
+                mrlFromDatabase.sort(compare);
+                const distinctReports = [];
+                for (let i = 0; i < mrlReports.length; i++) {
+                    if (sampleNumberBinarySearch(mrlFromDatabase, mrlReports[i].sampleNumber) == -1) {
+                        const chemicals = mrlReports[i].chemicals;
+                        for (let j = 0; j < chemicals.length; j++) {
+                            if (chemicals[j].srNo && chemicals[j].srNo != 0) {
+                                chemicals[j].partOfAnnex9 = "Yes";
+                                if (bannedChemicalBinarySearch(bannedChemicals, chemicals[j].srNo) != -1)
+                                    chemicals[j].redList = "Yes";
+                                else
+                                    chemicals[j].redList = "No";
+                            } else {
+                                chemicals[j].partOfAnnex9 = "No";
+                                chemicals[j].redList = "No";
+                            }
+                        }
+                        distinctReports.push(mrlReports[i]);
+                    } else
+                        console.log(mrlReports[i].sampleNumber, "already exists");
+                }
+                MrlReportModel.insertMany(distinctReports)
+                    .then(resolve)
+                    .catch(reject);
+            })
+            .catch(reject);
+    });
+}
+
+
 export function deleteReport(_id) {
     return new Promise((resolve, reject) => {
         MrlReportModel.deleteOne({ _id })
@@ -152,4 +198,42 @@ function isRedListChemical(bannedChemical) {// if any chemical is redList then r
         || bannedChemical.MMUK_COOP_UK.toUpperCase() == "RED"
         || bannedChemical.global2000.toUpperCase() == "RED"
         || bannedChemical.EUMRL.toUpperCase() == "RED");
+}
+
+function compare(a, b) {//lexicographical sorting
+    return a.sampleNumber.localeCompare(b.sampleNumber);
+};
+
+function sampleNumberBinarySearch(list, key) {//binary search for sample number in stored collection
+    let low = 0, high = list.length - 1;
+    // console.log(list);
+    while (low <= high) {
+        let mid = Math.floor((low + high) / 2);
+        // console.log(mid);
+        const compareResult = list[mid].sampleNumber.localeCompare(key);
+        if (compareResult == 0)
+            return mid;
+        else if (compareResult < 0)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+
+function bannedChemicalBinarySearch(list, key) {//binary search for banned chemical srNo.
+    let low = 0, high = list.length - 1;
+    // console.log(list);
+    while (low <= high) {
+        let mid = Math.floor((low + high) / 2);
+        // console.log(list[mid].srNo);
+        // console.log(mid);
+        if (list[mid].srNo == key)
+            return mid;
+        else if (list[mid].srNo < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
 }

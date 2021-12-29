@@ -61,6 +61,62 @@ export function updateDiary(diaryId, data) {
     });
 }
 
+export function markDiaryAsComplete(_id, updateData) {
+    return new Promise((resolve, reject) => {
+        let updateQuery;
+        console.log(_id, updateData);
+        switch (updateData.type) {
+            case "spraying":
+                updateQuery = {
+                    $set: {
+                        "spraying.isCompleted": true,
+                        "spraying.completedDate": updateData.completedDate
+                    }
+                }
+                break;
+            case "irrigation":
+                updateQuery = {
+                    $set: {
+                        "irrigation.isCompleted": true,
+                        "irrigation.completedDate": updateData.completedDate
+                    }
+                }
+                break;
+            case "farmWork":
+                updateQuery = {
+                    $set: {
+                        "farmWork.isCompleted": true,
+                        "farmWork.completedDate": updateData.completedDate
+                    }
+                }
+                break;
+            case "soilWork":
+                updateQuery = {
+                    $set: {
+                        "soilWork.isCompleted": true,
+                        "soilWork.completedDate": updateData.completedDate
+                    }
+                }
+                break;
+            case "maintenanceWork":
+                updateQuery = {
+                    $set: {
+                        "maintenanceWork.isCompleted": true,
+                        "maintenanceWork.completedDate": updateData.completedDate
+                    }
+                }
+                break;
+            default:
+                console.log("Wrong type is specified");
+                reject(new Error("wrong type is specified"));
+                return;
+        }
+        DailyDiary.updateOne({ _id }, updateQuery)
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
 export function deleteDiary(diaryId) {
     return new Promise((resolve, reject) => {
         DailyDiary.deleteOne({
