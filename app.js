@@ -15,6 +15,8 @@ import seasonalData from "./routes/seasonalData.js";
 import filters from "./routes/filters.js";
 import broadcast from "./routes/broadcast.js";
 import mrlReport from './routes/mrl.js';
+import cropMonitoring from './routes/cropMonitoring.js';
+
 
 app.use(json());//to access data in raw query (postman).
 
@@ -24,6 +26,7 @@ app.use("/seasonalData", seasonalData);
 app.use("/filters", filters);
 app.use("/broadcasts", broadcast);
 app.use("/mrlReports", mrlReport);
+app.use("/cropMonitoring", cropMonitoring);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
