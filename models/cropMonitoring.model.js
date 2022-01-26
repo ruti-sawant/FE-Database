@@ -16,7 +16,7 @@ const cropMonitoringSchema = {
     },
     plotNumber: String,
     date: Date,
-    pest: {
+    pest: [{
         insectName: String,
         severityType: String,
         location: {
@@ -31,8 +31,8 @@ const cropMonitoringSchema = {
         pestPhotoId1: String,
         pestPhoto2: String,
         pestPhotoId2: String,
-    },
-    disease: {
+    }],
+    disease: [{
         diseaseName: String,
         severityType: String,
         location: {
@@ -47,8 +47,8 @@ const cropMonitoringSchema = {
         diseasePhotoId1: String,
         diseasePhoto2: String,
         diseasePhotoId2: String,
-    },
-    plantHealth: {
+    }],
+    plantHealth: [{
         severityType: String,
         location: {
             latitude: String,
@@ -59,8 +59,8 @@ const cropMonitoringSchema = {
         plantHealthPhotoId1: String,
         plantHealthPhoto2: String,
         plantHealthPhotoId2: String,
-    },
-    soilHealth: {
+    }],
+    soilHealth: [{
         severityType: String,
         location: {
             latitude: String,
@@ -74,19 +74,16 @@ const cropMonitoringSchema = {
         soilHealthPhotoId1: String,
         soilHealthPhoto2: String,
         soilHealthPhotoId2: String,
-    },
-    other: {
+    }],
+    other: [{
         severityType: String,
         description: String,
-        correctiveAction: [{
-            chemical: String,
-            quantity: String,
-        }],
+        correctiveAction: String,
         otherPhoto1: String,
         otherPhotoId1: String,
         otherPhoto2: String,
         otherPhotoId2: String,
-    }
+    }]
 }
 
 export const CropMonitoring = mongoose.model("cropMonitoring", cropMonitoringSchema);
