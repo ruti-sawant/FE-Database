@@ -62,13 +62,13 @@ export function insertPlotOfFarmer(farmerId, plot) {
         FarmerInfo.updateOne({ _id: farmerId }, {
             $push: { plots: plot }
         })
-            .then(() => {
+            .then((data) => {
                 try {
                     updateFilters(undefined, undefined, plot.farmInformation.MHCode, undefined, undefined, undefined);
                 } catch (err) {
                     console.log("Error in filter of insert of farmer", err);
                 }
-                resolve();
+                resolve(data);
             })
             .catch(reject);
     });

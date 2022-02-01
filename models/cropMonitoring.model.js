@@ -14,6 +14,7 @@ const cropMonitoringSchema = {
         type: String,
         required: true
     },
+    reporter: String,
     plotNumber: String,
     date: Date,
     pest: [{
