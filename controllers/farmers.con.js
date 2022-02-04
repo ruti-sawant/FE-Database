@@ -119,6 +119,33 @@ export function deleteFarmer(id) {
     });
 }
 
+export function deletePlotOfFarmer(plotId) {
+    return new Promise((resolve, reject) => {
+        FarmerInfo.findOne({ "plots._id": plotId })
+            .then((data) => {
+                if (data && data.plots) {
+                    //if more than one plots are there then update the object
+                    if (data.plots.length > 1) {
+                        FarmerInfo.updateOne({ "plots._id": plotId }, {
+                            $pull: {
+                                plots: { _id: plotId }
+                            }
+                        })
+                            .then(resolve)
+                            .catch(reject);
+                    } else {//for single plot delete whole farmer.
+                        deleteFarmer(data._id)
+                            .then(resolve)
+                            .catch(reject);
+                    }
+                } else {
+                    reject(new Error("Plot does not exists"));
+                }
+            })
+            .catch(reject);
+    });
+}
+
 async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variety) {
     try {
         Filter.findOne({})

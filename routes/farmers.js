@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 // file to handle farmers router
-import { insertFarmer, getAllFarmersData, getFarmerData, updateFarmer, updatePlotOfFarmer, insertPlotOfFarmer, deleteFarmer, getFarmerDataUsingGGN, getFarmerUsingMHCode } from "../controllers/farmers.con.js";
+import { insertFarmer, getAllFarmersData, getFarmerData, updateFarmer, updatePlotOfFarmer, insertPlotOfFarmer, deleteFarmer, getFarmerDataUsingGGN, getFarmerUsingMHCode, deletePlotOfFarmer } from "../controllers/farmers.con.js";
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
@@ -115,6 +115,19 @@ router.patch("/newPlot/:farmerId", middlewareAuthentication, (req, res) => {
         })
         .catch((err) => {
             console.log("plot insert err", err);
+            res.status(400).send({ message: err.message });
+        });
+});
+
+router.patch("/deletePlot/:plotId", middlewareAuthentication, (req, res) => {
+    const plotId = req.params.plotId;
+    deletePlotOfFarmer(plotId)
+        .then((data) => {
+            console.log("data", data);
+            res.status(200).send({ message: "plot " + plotId + " deleted" });
+        })
+        .catch((err) => {
+            console.log("err", err);
             res.status(400).send({ message: err.message });
         });
 });

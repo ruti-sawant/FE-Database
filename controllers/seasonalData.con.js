@@ -80,3 +80,19 @@ export function deleteSeasonalData(id) {
             .catch(reject);
     });
 }
+
+export function deleteSeasonalDataByYear(year) {
+    return new Promise((resolve, reject) => {
+        SeasonalFarmerData.deleteMany({ year })
+            .then(resolve)
+            .catch(reject);
+    });
+}
+
+export function deleteSeasonalDataByPlotId(plotId) {
+    return new Promise((resolve, reject) => {
+        SeasonalFarmerData.deleteMany({ plotId })
+            .then(resolve)
+            .catch(reject);
+    });
+}

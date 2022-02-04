@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSeasonalData, insertSeasonalData, updateSeasonalData, deleteSeasonalData, deleteFarmerSeasonalData, getMHCodeSeasonalData } from "../controllers/seasonalData.con.js";
+import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSeasonalData, insertSeasonalData, updateSeasonalData, deleteSeasonalData, deleteFarmerSeasonalData, getMHCodeSeasonalData, deleteSeasonalDataByYear, deleteSeasonalDataByPlotId } from "../controllers/seasonalData.con.js";
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
@@ -130,6 +130,32 @@ router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res
                 res.status(400).send({ message: err.message });
             })
     }
+});
+
+router.delete("/deleteByYear/data/:year", middlewareAuthentication, (req, res) => {
+    const year = req.params.year;
+    deleteSeasonalDataByYear(year)
+        .then((data) => {
+            console.log("data", data);
+            res.status(200).send({ message: data.deletedCount + " records deleted" });
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(400).send({ message: err.message });
+        });
+});
+
+router.delete("/deleteByPlot/data/:plotId", middlewareAuthentication, (req, res) => {
+    const plotId = req.params.plotId;
+    deleteSeasonalDataByPlotId(plotId)
+        .then((data) => {
+            console.log("data", data);
+            res.status(200).send({ message: data.deletedCount + " records deleted" });
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(400).send({ message: err.message });
+        });
 });
 
 export default router;
