@@ -111,10 +111,32 @@ export function updatePlotOfFarmer(_id, data) {
 
 export function deleteFarmer(id) {
     return new Promise((resolve, reject) => {
-        FarmerInfo.deleteOne({
-            _id: id
-        })
-            .then(resolve)
+        FarmerInfo.findByIdAndDelete(id)
+            .then((data) => {
+                console.log(data);
+                let GGN = null;
+                if (data && data.personalInformation.name.trim() === data.personalInformation.familyName.trim()) {
+                    GGN = data.personalInformation.GGN;
+                }
+                const MHCodes = [];
+                let farmerName = null;
+                if (data) {
+                    farmerName = data.personalInformation.name;
+                    for (let i = 0; i < data.plots.length; i++) {
+                        MHCodes.push(data.plots[i].farmInformation.MHCode);
+                    }
+                }
+                Filter.findOneAndUpdate({}, {
+                    $pull: {
+                        MHCode: { $in: MHCodes },
+                        GGN: GGN,
+                        farmerName: farmerName
+                    }
+                })
+                    .then((data) => { })
+                    .catch((err) => { console.log("err ggn mhcode ", err); });
+                resolve(data);
+            })
             .catch(reject);
     });
 }
@@ -126,12 +148,31 @@ export function deletePlotOfFarmer(plotId) {
                 if (data && data.plots) {
                     //if more than one plots are there then update the object
                     if (data.plots.length > 1) {
-                        FarmerInfo.updateOne({ "plots._id": plotId }, {
+                        FarmerInfo.findOneAndUpdate({ "plots._id": plotId }, {
                             $pull: {
                                 plots: { _id: plotId }
                             }
                         })
-                            .then(resolve)
+                            .then((data) => {
+                                if (data) {
+                                    let MHCode = null;
+                                    for (let i = 0; i < data.plots.length; i++) {
+                                        if (data.plots[i]._id === plotId) {
+                                            MHCode = data.plots[i].farmInformation.MHCode;
+                                        }
+                                    }
+                                    if (MHCode) {
+                                        Filter.findOneAndUpdate({}, {
+                                            $pull: {
+                                                MHCode: MHCode
+                                            }
+                                        })
+                                            .then((data) => { })
+                                            .catch((err) => { console.log(err); });
+                                    }
+                                }
+                                resolve(data);
+                            })
                             .catch(reject);
                     } else {//for single plot delete whole farmer.
                         deleteFarmer(data._id)
