@@ -19,6 +19,8 @@ const farmerSchema = {
             type: String,
             required: true,
         },
+        profileUrl: String,
+        profileId: String,
         farmMap: String,//to store my map link 
         consultantName: String,
     },
@@ -34,51 +36,40 @@ const farmerSchema = {
                     type: String,
                 },//starts with MH
                 crop: {
-                    // required: true,
                     type: String,
                 },
                 variety: {
-                    // required: true,
                     type: String,
                 },
                 soilType: {
-                    // required: true,
                     type: String,
                 },
                 plotArea: {
-                    // required: true,
                     type: Number
                 },//in acres
             },
             address: {//for storing address related information
                 coordinates: {
                     latitude: {
-                        // required: true,
                         type: String,
                     },
                     longitude: {
-                        // required: true,
                         type: String,
                     },
                 },
                 mapLink: {
                     type: String,
-                    // required: true,
                 },//to view that on map 
                 village: {
-                    // required: true,
                     type: String,
                 },
                 taluka: {
-                    // required: true,
                     type: String,
                 },
                 district: {
-                    // required: true,
                     type: String,
                 },
                 pincode: {
-                    // required: true,
                     type: Number,
                 },
             },
@@ -88,11 +79,9 @@ const farmerSchema = {
             },
             cropSpacing: {//distance in feet
                 betweenTwoRows: {
-                    // required: true,
                     type: Number,
                 },
                 betweenTwoCrops: {
-                    // required: true,
                     type: Number,
                 },
             },
