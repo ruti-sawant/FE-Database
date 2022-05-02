@@ -1,5 +1,6 @@
 import { FarmerInfo } from "../models/farmers.model.js";
 import { Filter } from "../models/filter.model.js";
+import { SeasonalFarmerData } from "../models/farmers.model.js";
 
 export function getAllFarmersData(fields) {
     return new Promise((resolve, reject) => {
@@ -112,7 +113,7 @@ export function updatePlotOfFarmer(_id, data) {
 export function deleteFarmer(id) {
     return new Promise((resolve, reject) => {
         FarmerInfo.findByIdAndDelete(id)
-            .then((data) => {
+            .then(async (data) => {
                 console.log(data);
                 let GGN = null;
                 if (data && data.personalInformation.name.trim() === data.personalInformation.familyName.trim()) {
@@ -126,7 +127,10 @@ export function deleteFarmer(id) {
                         MHCodes.push(data.plots[i].farmInformation.MHCode);
                     }
                 }
-                Filter.findOneAndUpdate({}, {
+                await SeasonalFarmerData.deleteMany({ "farmerId": id })
+                    .then((data) => { })
+                    .catch((err) => { console.log("err seasonal data err ", err); });
+                await Filter.findOneAndUpdate({}, {
                     $pull: {
                         MHCode: { $in: MHCodes },
                         GGN: GGN,
@@ -153,22 +157,25 @@ export function deletePlotOfFarmer(plotId) {
                                 plots: { _id: plotId }
                             }
                         })
-                            .then((data) => {
+                            .then(async (data) => {
                                 if (data) {
-                                    let MHCode = null;
+                                    let MHCode = undefined;
                                     for (let i = 0; i < data.plots.length; i++) {
-                                        if (data.plots[i]._id === plotId) {
+                                        if (data.plots[i]._id == plotId) {
                                             MHCode = data.plots[i].farmInformation.MHCode;
                                         }
                                     }
                                     if (MHCode) {
-                                        Filter.findOneAndUpdate({}, {
+                                        await Filter.findOneAndUpdate({}, {
                                             $pull: {
                                                 MHCode: MHCode
                                             }
                                         })
                                             .then((data) => { })
                                             .catch((err) => { console.log(err); });
+                                        await SeasonalFarmerData.deleteMany({ "MHCode": MHCode })
+                                            .then((data) => { })
+                                            .catch((err) => { console.log("err seasonal data err ", err); });
                                     }
                                 }
                                 resolve(data);
