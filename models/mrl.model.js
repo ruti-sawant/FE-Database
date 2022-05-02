@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const mrlReportSchema = {
     year: Number,//todo: to be handled.
-    sealNumber: Number,
+    sealNumber: String,
     sampleNumber: String,
     labName: String,
     farmerName: String,
@@ -20,9 +20,9 @@ const mrlReportSchema = {
         result: Number,
         EUMRL: Number,
         LOQ: Number,
-        ArFD: Number,
-        intake: Number,
-        ArFDPercent: Number,
+        ArFD: String,
+        intake: String,
+        ArFDPercent: String,
         remark: String,
         partOfAnnex9: String,
         redList: String,//have to automatically decide by fetching banned list.

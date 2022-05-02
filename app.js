@@ -17,6 +17,7 @@ import broadcast from "./routes/broadcast.js";
 import mrlReport from './routes/mrl.js';
 import cropMonitoring from './routes/cropMonitoring.js';
 import admins from './routes/admins.js';
+import suggestions from './routes/suggestions.js';
 
 
 app.use(json());//to access data in raw query (postman).
@@ -29,6 +30,7 @@ app.use("/broadcasts", broadcast);
 app.use("/mrlReports", mrlReport);
 app.use("/cropMonitoring", cropMonitoring);
 app.use("/admins", admins);
+app.use("/suggestions", suggestions);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
