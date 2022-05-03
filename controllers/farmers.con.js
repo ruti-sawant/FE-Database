@@ -1,6 +1,7 @@
 import { FarmerInfo } from "../models/farmers.model.js";
 import { Filter } from "../models/filter.model.js";
 import { SeasonalFarmerData } from "../models/farmers.model.js";
+import { deleteFarmerSeasonalData, deleteSeasonalDataByMHCode } from './seasonalData.con.js';
 
 export function getAllFarmersData(fields) {
     return new Promise((resolve, reject) => {
@@ -127,7 +128,7 @@ export function deleteFarmer(id) {
                         MHCodes.push(data.plots[i].farmInformation.MHCode);
                     }
                 }
-                await SeasonalFarmerData.deleteMany({ "farmerId": id })
+                await deleteFarmerSeasonalData(id)
                     .then((data) => { })
                     .catch((err) => { console.log("err seasonal data err ", err); });
                 await Filter.findOneAndUpdate({}, {
@@ -173,7 +174,7 @@ export function deletePlotOfFarmer(plotId) {
                                         })
                                             .then((data) => { })
                                             .catch((err) => { console.log(err); });
-                                        await SeasonalFarmerData.deleteMany({ "MHCode": MHCode })
+                                        await deleteSeasonalDataByMHCode(MHCode)
                                             .then((data) => { })
                                             .catch((err) => { console.log("err seasonal data err ", err); });
                                     }

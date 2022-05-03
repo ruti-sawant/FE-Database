@@ -119,6 +119,14 @@ const seasonalFarmerDataSchema = {
         exportTonnage: Number,
         localTonnage: Number,
     },
+    reports: {
+        petioleReportUrl: String,
+        petioleReportId: String,
+        soilReportUrl: String,
+        soilReportId: String,
+        waterReportUrl: String,
+        waterReportId: String
+    },
     primaryQualityIssuesFaced: [String],//to store various issues faced in spreadsheet it is mentioned a true false 
     MRLResults: {
         maxIndividual: Number,  //%value

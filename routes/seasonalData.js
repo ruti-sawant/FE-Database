@@ -107,10 +107,7 @@ router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res
         if (seasonalDataId) {
             deleteSeasonalData(seasonalDataId)
                 .then((data) => {
-                    if (data.deletedCount == 0)//no document exists
-                        res.status(400).send({ message: "failure" });
-                    else
-                        res.status(200).send({ message: "success" });
+                    res.status(200).send({ message: " records deleted" });
                 })
                 .catch((err) => {
                     res.status(400).send({ message: err.message });
@@ -121,10 +118,7 @@ router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res
     } else {
         deleteFarmerSeasonalData(farmerId)
             .then((data) => {
-                if (data.deletedCount == 0)//no document exists for farmer
-                    res.status(400).send({ message: "failure" });
-                else
-                    res.status(200).send({ message: "success" });
+                res.status(200).send({ message: " records deleted" });
             })
             .catch((err) => {
                 res.status(400).send({ message: err.message });
@@ -137,7 +131,7 @@ router.delete("/deleteByYear/data/:year", middlewareAuthentication, (req, res) =
     deleteSeasonalDataByYear(year)
         .then((data) => {
             console.log("data", data);
-            res.status(200).send({ message: data.deletedCount + " records deleted" });
+            res.status(200).send({ message: " records deleted" });
         })
         .catch((err) => {
             console.log("err", err);
@@ -150,7 +144,7 @@ router.delete("/deleteByPlot/data/:plotId", middlewareAuthentication, (req, res)
     deleteSeasonalDataByPlotId(plotId)
         .then((data) => {
             console.log("data", data);
-            res.status(200).send({ message: data.deletedCount + " records deleted" });
+            res.status(200).send({ message: " records deleted" });
         })
         .catch((err) => {
             console.log("err", err);
