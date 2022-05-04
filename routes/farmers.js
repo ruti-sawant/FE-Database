@@ -20,6 +20,36 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+
+router.get("/plots/data", middlewareAuthentication, (req, res) => {
+    const query = builtProjection(req.query);//building query to return only specific parts of data
+    getAllFarmersData(query)
+        .then((result) => {
+            let resultLength = result.length;
+            let objectToSend = [];
+            for (let i = 0; i < resultLength; i++) {
+                const farmerObject = {};
+                farmerObject.farmerID = result[i]._id;
+                farmerObject.farmerName = result[i].personalInformation.name;
+                farmerObject.familyName = result[i].personalInformation.familyName;
+                farmerObject.GGN = result[i].personalInformation.GGN;
+                if (result[i].personalInformation.name.trim() === result[i].personalInformation.familyName.trim()) {
+                    farmerObject.plots = getPlotsForHead(result, i);
+                } else {
+                    farmerObject.plots = getPlots(result, i);
+                }
+                // console.log(farmerObject.farmerName, farmerObject.plot);
+                objectToSend.push(farmerObject);
+            }
+            // console.log(objectToSend);
+            res.status(200).send(objectToSend);
+        })
+        .catch((err) => {
+
+            res.status(400).send({ message: err.message });
+        });
+});
+
 router.get("/:farmerId", middlewareAuthentication, async (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
     // console.log(query);
@@ -146,3 +176,36 @@ router.delete("/:farmerId", middlewareAuthentication, async (req, res) => {
 });
 
 export default router;
+
+
+//supporting functions.
+function getPlotsForHead(result, i) {
+    const gcnKey = result[i].personalInformation.GGN;
+    const resultLength = result.length;
+    const resultantArray = [];
+    for (let j = 0; j < resultLength; j++) {
+        if (result[j].personalInformation.GGN === gcnKey) {
+            const plots = getPlots(result, j);
+            for (let k = 0; k < plots.length; k++)
+                resultantArray.push(plots[k]);
+        }
+    }
+    return resultantArray;
+}
+
+function getPlots(result, i) {
+    const plotsArray = result[i].plots;
+    const numberOfPlots = plotsArray.length;
+    const resultantArray = [];
+    for (let j = 0; j < numberOfPlots; j++) {
+        console.log(plotsArray[j]);
+        resultantArray.push({
+            plotId: plotsArray[j]._id,
+            plot: plotsArray[j].farmInformation.plotNumber,
+            farmerId: result[i]._id,
+            farmerName: result[i].personalInformation.name,
+            MHCode: plotsArray[j].farmInformation.MHCode,
+        });
+    }
+    return resultantArray;
+}
