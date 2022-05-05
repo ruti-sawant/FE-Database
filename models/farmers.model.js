@@ -19,6 +19,7 @@ const farmerSchema = {
             type: String,
             required: true,
         },
+        userId: String,//for relating it to collection of otp and login.
         profileUrl: String,
         profileId: String,
         farmMap: String,//to store my map link 

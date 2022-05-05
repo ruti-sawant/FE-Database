@@ -18,6 +18,8 @@ import mrlReport from './routes/mrl.js';
 import cropMonitoring from './routes/cropMonitoring.js';
 import admins from './routes/admins.js';
 import suggestions from './routes/suggestions.js';
+import otp from './routes/otp.js';
+import login from './routes/login.js';
 
 
 app.use(json());//to access data in raw query (postman).
@@ -31,6 +33,8 @@ app.use("/mrlReports", mrlReport);
 app.use("/cropMonitoring", cropMonitoring);
 app.use("/admins", admins);
 app.use("/suggestions", suggestions);
+app.use("/otp", otp);
+app.use("/login", login);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
