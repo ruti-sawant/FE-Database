@@ -24,7 +24,7 @@ router.get("/:adminId", middlewareAuthentication, async (req, res) => {
     getAdmin(req.params.adminId, query)
         .then((data) => {
             console.log(data);
-            res.status(200).send(data);
+            res.status(200).send("data");
         })
         .catch((err) => {
             console.log(err);
@@ -35,7 +35,7 @@ router.get("/:adminId", middlewareAuthentication, async (req, res) => {
 router.post("/", middlewareAuthentication, async (req, res) => {
     addAdmin(req.body.data)
         .then((admin) => {
-            console.log(admin);
+            // console.log(admin);
             res.status(200).send({ message: 'admin inserted successfully' });
         })
         .catch((err) => {

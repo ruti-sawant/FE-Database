@@ -1,7 +1,11 @@
+import bcrypt from 'bcrypt';
+
 import { FarmerInfo } from "../models/farmers.model.js";
 import { Filter } from "../models/filter.model.js";
 import { SeasonalFarmerData } from "../models/farmers.model.js";
 import { deleteFarmerSeasonalData, deleteSeasonalDataByMHCode } from './seasonalData.con.js';
+import Login from "../models/login.model.js";
+
 
 export function getAllFarmersData(fields) {
     return new Promise((resolve, reject) => {
@@ -41,7 +45,7 @@ export function insertFarmer(farmer) {
     return new Promise((resolve, reject) => {
         const farmerObject = new FarmerInfo(farmer);
         farmerObject.save()
-            .then(() => {
+            .then((data) => {
                 try {
                     let MHCode = undefined;
                     if (farmer.plots && farmer.plots[0]) {
@@ -52,6 +56,29 @@ export function insertFarmer(farmer) {
                 } catch (err) {
                     console.log("Error in filter of insert of farmer", err);
                 }
+                //code to create password for user.
+                const userId = farmer.personalInformation.userId;
+                const password = farmer.personalInformation.userId;
+                const userType = "farmer";
+                const mongoId = data._id;
+                const saltRounds = Number(process.env.SALT_ROUNDS);
+                bcrypt.hash(password, saltRounds, function (err, hash) {
+                    if (err) {
+                        console.log("err", err);
+                    } else {
+                        const login = new Login({
+                            userId, password: hash, userType, mongoId
+                        });
+                        console.log(userId, password, hash, userType, mongoId);
+                        login.save()
+                            .then((result) => {
+                                console.log(result);
+                            })
+                            .catch((err) => {
+                                console.log("err last", err);
+                            });
+                    }
+                });
                 resolve();
             })
             .catch(reject);
@@ -140,6 +167,13 @@ export function deleteFarmer(id) {
                 })
                     .then((data) => { })
                     .catch((err) => { console.log("err ggn mhcode ", err); });
+                Login.findOneAndDelete({ mongoId: data._id })
+                    .then((result) => {
+                        console.log(result);
+                    })
+                    .catch((err) => {
+                        console.log("err", err);
+                    });
                 resolve(data);
             })
             .catch(reject);
