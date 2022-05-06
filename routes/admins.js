@@ -24,7 +24,7 @@ router.get("/:adminId", middlewareAuthentication, async (req, res) => {
     getAdmin(req.params.adminId, query)
         .then((data) => {
             console.log(data);
-            res.status(200).send("data");
+            res.status(200).send(data);
         })
         .catch((err) => {
             console.log(err);

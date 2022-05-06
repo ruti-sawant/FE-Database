@@ -6,6 +6,28 @@ import { SeasonalFarmerData } from "../models/farmers.model.js";
 import { deleteFarmerSeasonalData, deleteSeasonalDataByMHCode } from './seasonalData.con.js';
 import Login from "../models/login.model.js";
 
+// const password = "somnath";
+// const userId = "somnath";
+// const userType = "farmer";
+// const mongoId = "61811524c9c8d0cbdbcf54ca";
+// const saltRounds = Number(process.env.SALT_ROUNDS);
+// bcrypt.hash(password, saltRounds, function (err, hash) {
+//     if (err) {
+//         console.log("err", err);
+//     } else {
+//         const login = new Login({
+//             userId, password: hash, userType, mongoId
+//         });
+//         console.log(userId, password, hash, userType, mongoId);
+//         login.save()
+//             .then((result) => {
+//                 console.log(result);
+//             })
+//             .catch((err) => {
+//                 console.log("err last", err);
+//             });
+//     }
+// });
 
 export function getAllFarmersData(fields) {
     return new Promise((resolve, reject) => {
