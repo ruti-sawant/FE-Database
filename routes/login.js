@@ -8,8 +8,53 @@ import bcrypt from 'bcrypt';
 
 import Login from "../models/login.model.js";
 import middlewareAuthentication from "../authentication.js";
+import FarmerInfo from "../models/farmers.model.js";
+import Admin from "../models/admins.model.js";
 
 
+router.get("/usernames", middlewareAuthentication, (req, res) => {
+    Login.find({})
+        .then(async (data) => {
+            const dataToSend = [];
+            //iterate over all data find its name.
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].userType === 'farmer') {
+                    await FarmerInfo.findOne({ _id: data[i].mongoId })
+                        .then((farmer) => {
+                            dataToSend.push({
+                                name: farmer.personalInformation.name,
+                                userId: data[i].userId,
+                                userType: data[i].userType
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(400).send({ message: err.message });
+                            return;
+                        });
+                } else {
+                    await Admin.findOne({ _id: data[i].mongoId })
+                        .then((admin) => {
+                            dataToSend.push({
+                                name: admin.name,
+                                userId: data[i].userId,
+                                userType: data[i].userType
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(400).send({ message: err.message });
+                            return;
+                        });
+                }
+            }
+            res.status(200).send(dataToSend);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(400).send({ message: err.message });
+        });
+})
 
 router.post("/verify", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
