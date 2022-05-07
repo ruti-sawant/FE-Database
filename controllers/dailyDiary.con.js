@@ -1,5 +1,6 @@
 import { DailyDiary } from "../models/dailyDiary.model.js";
 
+//get All daily diaries
 export function getAllDiaries(fields) {
     return new Promise((resolve, reject) => {
         DailyDiary.find({}, fields)
@@ -8,6 +9,7 @@ export function getAllDiaries(fields) {
     });
 }
 
+//get single daily diary
 export function getDiary(diaryId, fields) {
     return new Promise((resolve, reject) => {
         DailyDiary.findOne({ _id: diaryId }, fields)
@@ -16,6 +18,7 @@ export function getDiary(diaryId, fields) {
     });
 }
 
+//get diaries for any single farmer.
 export function getFarmerDiaries(farmerId, fields) {
     return new Promise((resolve, reject) => {
         console.log("farmerId", farmerId);
@@ -25,6 +28,7 @@ export function getFarmerDiaries(farmerId, fields) {
     });
 }
 
+//get diaries for any single plot by MHCode.
 export function getMHCodeDiaries(MHCode, fields) {
     return new Promise((resolve, reject) => {
         console.log("mhcode", MHCode);
@@ -34,6 +38,7 @@ export function getMHCodeDiaries(MHCode, fields) {
     })
 }
 
+//add new single daily diary into database.
 export function insertDailyDiary(diary) {
     return new Promise((resolve, reject) => {
         const diaryObject = new DailyDiary(diary);
@@ -43,6 +48,7 @@ export function insertDailyDiary(diary) {
     });
 }
 
+//insert multiple daily diaries into database.
 export function insertMultipleDailyDiaries(diaries) {
     return new Promise((resolve, reject) => {
         DailyDiary.insertMany(diaries)
@@ -51,6 +57,7 @@ export function insertMultipleDailyDiaries(diaries) {
     })
 }
 
+//update daily diary by its id.
 export function updateDiary(diaryId, data) {
     return new Promise((resolve, reject) => {
         DailyDiary.updateOne({ _id: diaryId },
@@ -61,10 +68,12 @@ export function updateDiary(diaryId, data) {
     });
 }
 
+//mark daily diary as complete by type of completion.
 export function markDiaryAsComplete(_id, updateData) {
     return new Promise((resolve, reject) => {
         let updateQuery;
         console.log(_id, updateData);
+        //for any type update it as complete.
         switch (updateData.type) {
             case "spraying":
                 updateQuery = {
@@ -117,6 +126,7 @@ export function markDiaryAsComplete(_id, updateData) {
     });
 }
 
+//delete daily diary by its id.
 export function deleteDiary(diaryId) {
     return new Promise((resolve, reject) => {
         DailyDiary.deleteOne({
@@ -127,6 +137,7 @@ export function deleteDiary(diaryId) {
     });
 }
 
+// delete diaries for any single farmer by farmerId.
 export function deleteFarmerDiary(farmerId) {
     return new Promise((resolve, reject) => {
         DailyDiary.deleteMany({

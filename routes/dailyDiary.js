@@ -5,6 +5,7 @@ import { getAllDiaries, getMHCodeDiaries, getDiary, getFarmerDiaries, insertDail
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
+//to get all daily diaries.
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
 
@@ -19,6 +20,7 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get all daily diaries for a single plot by MHCode.
 router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
 
@@ -31,11 +33,13 @@ router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
         })
 })
 
+//
 router.get("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
 
     const farmerId = req.params.farmerId;
     const diaryId = req.params.diaryId;
+    //to data by diaryId.
     if (farmerId === 'data') {
         // if dairyId is specified then only we fetch database
         if (diaryId) {
@@ -50,6 +54,7 @@ router.get("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
+        //to get data by farmerId.
         getFarmerDiaries(farmerId, query)
             .then((data) => {
                 res.status(200).send(data);
@@ -60,6 +65,7 @@ router.get("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
     }
 });
 
+//to add new daily diary.
 router.post("/", middlewareAuthentication, (req, res) => {
     insertDailyDiary(req.body.data)
         .then((data) => {
@@ -70,6 +76,7 @@ router.post("/", middlewareAuthentication, (req, res) => {
         })
 });
 
+//to add multiple daily diaries.
 router.post("/all", middlewareAuthentication, (req, res) => {
     insertMultipleDailyDiaries(req.body.data)
         .then((data) => {
@@ -81,6 +88,7 @@ router.post("/all", middlewareAuthentication, (req, res) => {
         })
 });
 
+//to update daily diary.
 router.patch("/:id", middlewareAuthentication, (req, res) => {
     updateDiary(req.params.id, req.body.data)
         .then((result) => {
@@ -96,6 +104,7 @@ router.patch("/:id", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to mark any daily diary as complete.
 router.patch("/markComplete/:id", middlewareAuthentication, (req, res) => {
     if (req.body.data) {
         markDiaryAsComplete(req.params.id, req.body.data)
@@ -116,9 +125,9 @@ router.delete("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
     //for farmerId!=='data' I have to build logic considering farmerId is specified
     const farmerId = req.params.farmerId;
     const diaryId = req.params.diaryId;
-
+    //delete 
     if (farmerId === 'data') {
-        // if seasonalDataId is specified then only we fetch database
+        //delete individual diary
         if (diaryId) {
             deleteDiary(diaryId)
                 .then((data) => {
@@ -134,6 +143,7 @@ router.delete("/:farmerId/:diaryId?", middlewareAuthentication, (req, res) => {
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
+        //delete all diaries for a single farmer by farmerId.
         deleteFarmerDiary(farmerId)
             .then((data) => {
                 if (data.deletedCount == 0)//no document exists for farmer

@@ -5,6 +5,7 @@ const app = express();
 
 import mongoose from "mongoose";
 
+//mongoDB connection
 mongoose.connect(process.env.URL + '/' + process.env.DB_NAME)
     .then(() => console.log("Connected to Database"))
     .catch(() => console.log("Error in connecting to database"));
@@ -37,6 +38,8 @@ app.use("/otp", otp);
 app.use("/login", login);
 
 const PORT = process.env.PORT || 5000;
+
+//listening on port.
 app.listen(PORT, () => {
     console.log("Started on port " + PORT);
 });

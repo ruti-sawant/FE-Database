@@ -1,6 +1,6 @@
 import { CropMonitoring } from "../models/cropMonitoring.model.js";
 
-
+//to get all crop monitoring
 export function getAllMonitoring(fields) {
     return new Promise((resolve, reject) => {
         CropMonitoring.find({}, fields)
@@ -9,6 +9,7 @@ export function getAllMonitoring(fields) {
     });
 }
 
+//get single crop monitoring
 export function getMonitoring(_id, fields) {
     return new Promise((resolve, reject) => {
         CropMonitoring.findOne({ _id }, fields)
@@ -17,6 +18,7 @@ export function getMonitoring(_id, fields) {
     });
 }
 
+//get crop monitoring related to single plot
 export function getMonitoringForPlot(MHCode, fields) {
     return new Promise((resolve, reject) => {
         CropMonitoring.find({ MHCode }, fields)
@@ -25,6 +27,7 @@ export function getMonitoringForPlot(MHCode, fields) {
     });
 }
 
+//insert crop monitoring.
 export function insertMonitoring(monitoring) {
     return new Promise((resolve, reject) => {
         const monitoringObject = new CropMonitoring(monitoring);
@@ -34,6 +37,7 @@ export function insertMonitoring(monitoring) {
     });
 }
 
+//delete crop monitoring by its id.
 export function deleteMonitoring(_id) {
     return new Promise((resolve, reject) => {
         CropMonitoring.deleteOne({ _id })
@@ -42,6 +46,7 @@ export function deleteMonitoring(_id) {
     });
 }
 
+//delete crop monitoring for any plot by MHCode.
 export function deleteMonitoringForPlot(MHCode) {
     return new Promise((resolve, reject) => {
         CropMonitoring.deleteMany({ MHCode })

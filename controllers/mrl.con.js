@@ -1,6 +1,6 @@
 import { ApprovedChemicalsModel, BannedChemicalsModel, MrlReportModel } from "../models/mrl.model.js";
 
-
+//get all mrl reports.
 export function getAllMrlReports(fields) {
     return new Promise((resolve, reject) => {
         MrlReportModel.find({}, fields)
@@ -9,6 +9,7 @@ export function getAllMrlReports(fields) {
     });
 }
 
+//get mrl report by id
 export function getMrlReport(_id, fields) {
     return new Promise((resolve, reject) => {
         MrlReportModel.findOne({ _id }, fields)
@@ -17,6 +18,7 @@ export function getMrlReport(_id, fields) {
     });
 }
 
+//get report by sampleNumber
 export function getMRLReportBySampleNumber(sampleNumber, fields) {
     return new Promise((resolve, reject) => {
         MrlReportModel.findOne({ sampleNumber }, fields)
@@ -25,6 +27,7 @@ export function getMRLReportBySampleNumber(sampleNumber, fields) {
     });
 }
 
+//get mrl report by MHCode
 export function getMRlReportByMHCode(MHCode, fields) {
     return new Promise((resolve, reject) => {
         MrlReportModel.find({ MHCode }, fields)
@@ -33,20 +36,22 @@ export function getMRlReportByMHCode(MHCode, fields) {
     });
 }
 
+//insert report.
 export function insertReport(mrl) {
     return new Promise((resolve, reject) => {
         const chemicals = mrl.chemicals;
         BannedChemicalsModel.find({})
             .then((bannedChemicalsData) => {
-                //todo: to search into banned list and put it into redList.
+                //traverse over banned chemicals
                 console.log(bannedChemicalsData);
                 for (let i = 0; i < chemicals.length; i++) {
+                    //initially not redlist chemical
                     mrl.chemicals[i].redList = "No";
                     if (chemicals[i].srNo && chemicals[i].srNo > 0) {// if there is valid srNo
-                        let j = 0;
-                        for (; j < bannedChemicalsData.length; j++) {//iterate banned chemicals 
+                        for (let j = 0; j < bannedChemicalsData.length; j++) {//iterate banned chemicals 
                             if (chemicals[i].srNo === bannedChemicalsData[j].srNo) {// if serial number matches in banned chemicals
                                 if (isRedListChemical(bannedChemicalsData[j])) {
+                                    //if redlist chemical
                                     mrl.chemicals[i].redList = "Yes";
                                 }
                             }
@@ -63,11 +68,11 @@ export function insertReport(mrl) {
     });
 }
 
-
-
+//insert multiple records.
 export function insertMultipleReports(mrlReports) {
     return new Promise(async (resolve, reject) => {
         let bannedChemicals = [];
+        //find banned list chemicals
         await BannedChemicalsModel.find({})
             .then((data) => {
                 bannedChemicals = data;
@@ -78,13 +83,18 @@ export function insertMultipleReports(mrlReports) {
             });
         MrlReportModel.find({})
             .then((mrlFromDatabase) => {
+                //sort banned chemicals on srNo.
+                // sort mrlFromDatabase on sampleNumber
                 bannedChemicals.sort((a, b) => { return a.srNo - b.srNo; });
                 mrlFromDatabase.sort(compare);
                 const distinctReports = [];
                 for (let i = 0; i < mrlReports.length; i++) {
+                    // binary search for sample number in stored collection
                     if (sampleNumberBinarySearch(mrlFromDatabase, mrlReports[i].sampleNumber) == -1) {
                         const chemicals = mrlReports[i].chemicals;
                         for (let j = 0; j < chemicals.length; j++) {
+                            //for valid chemicals
+                            // and assign redlist partOfAnnex9 accordingly.
                             if (chemicals[j].srNo && chemicals[j].srNo != 0) {
                                 chemicals[j].partOfAnnex9 = "Yes";
                                 if (bannedChemicalBinarySearch(bannedChemicals, chemicals[j].srNo) != -1)
@@ -100,6 +110,7 @@ export function insertMultipleReports(mrlReports) {
                     } else
                         console.log(mrlReports[i].sampleNumber, "already exists");
                 }
+                //push report into database at once.
                 MrlReportModel.insertMany(distinctReports)
                     .then(resolve)
                     .catch(reject);
@@ -108,7 +119,7 @@ export function insertMultipleReports(mrlReports) {
     });
 }
 
-
+//delete report by its id.
 export function deleteReport(_id) {
     return new Promise((resolve, reject) => {
         MrlReportModel.deleteOne({ _id })
@@ -117,6 +128,7 @@ export function deleteReport(_id) {
     });
 }
 
+//delete report for given MHCode.
 export function deleteReportForPlot(MHCode) {
     return new Promise((resolve, reject) => {
         MrlReportModel.deleteMany({ MHCode })
@@ -125,6 +137,7 @@ export function deleteReportForPlot(MHCode) {
     });
 }
 
+//delete report by MHCode and year.
 export function deleteReportForPlotAndYear(MHCode, year) {
     return new Promise((resolve, reject) => {
         MrlReportModel.deleteMany({ MHCode, year })
@@ -134,7 +147,7 @@ export function deleteReportForPlotAndYear(MHCode, year) {
 }
 
 //functions to handle approved chemicals collection.
-
+//get all approved chemicals.
 export function getAllApprovedChemicals(fields) {
     return new Promise((resolve, reject) => {
         ApprovedChemicalsModel.find({}, fields)
@@ -143,12 +156,14 @@ export function getAllApprovedChemicals(fields) {
     });
 }
 
-
+//update approved chemicals.
 export function updateAllApprovedChemicals(approvedChemicals) {
     return new Promise((resolve, reject) => {
         ApprovedChemicalsModel.deleteMany({})
             .then((deleted) => {
                 console.log("deletedData in approved chemicals", deleted);
+                //delete old approved chemicals.
+                //override by new approved chemicals.
                 ApprovedChemicalsModel.insertMany(approvedChemicals)
                     .then(resolve)
                     .catch(reject);
@@ -162,7 +177,7 @@ export function updateAllApprovedChemicals(approvedChemicals) {
 
 
 //functions to handle banned chemicals collection.
-
+//get all banned chemicals.
 export function getAllBannedChemicals(fields) {
     return new Promise((resolve, reject) => {
         BannedChemicalsModel.find({}, fields)
@@ -176,6 +191,8 @@ export function updateAllBannedChemicals(bannedChemicals) {
         BannedChemicalsModel.deleteMany({})
             .then((deleted) => {
                 console.log("deletedData in banned chemicals", deleted);
+                //delete old banned chemicals.
+                //override by new banned chemicals.
                 BannedChemicalsModel.insertMany(bannedChemicals)
                     .then(resolve)
                     .catch(reject);
@@ -190,7 +207,7 @@ export function updateAllBannedChemicals(bannedChemicals) {
 
 
 //supportive functions
-
+//check if current chemical is redlist chemical.
 function isRedListChemical(bannedChemical) {// if any chemical is redList then return true.
     return (bannedChemical.fairTrade_PPO.toUpperCase() == "RED"
         || bannedChemical.EUG_Germany.toUpperCase() == "RED"
@@ -200,10 +217,12 @@ function isRedListChemical(bannedChemical) {// if any chemical is redList then r
         || bannedChemical.EUMRL.toUpperCase() == "RED");
 }
 
+//sort on basis of sampleNumber.
 function compare(a, b) {//lexicographical sorting
     return a.sampleNumber.localeCompare(b.sampleNumber);
 };
 
+//binary search for sample number.
 function sampleNumberBinarySearch(list, key) {//binary search for sample number in stored collection
     let low = 0, high = list.length - 1;
     // console.log(list);
@@ -221,6 +240,7 @@ function sampleNumberBinarySearch(list, key) {//binary search for sample number 
     return -1;
 }
 
+//binary search for banned chemical.
 function bannedChemicalBinarySearch(list, key) {//binary search for banned chemical srNo.
     let low = 0, high = list.length - 1;
     // console.log(list);

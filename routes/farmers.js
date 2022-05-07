@@ -6,6 +6,7 @@ import { insertFarmer, getAllFarmersData, getFarmerData, updateFarmer, updatePlo
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
+//to get all farmers.
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
     // console.log(query);
@@ -21,6 +22,8 @@ router.get("/", middlewareAuthentication, (req, res) => {
 });
 
 
+//to get mapping of farmersIds and their plotIds MHCodes and GGNs.
+//for family head we include all plots.
 router.get("/plots/data", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
     getAllFarmersData(query)
@@ -45,11 +48,11 @@ router.get("/plots/data", middlewareAuthentication, (req, res) => {
             res.status(200).send(objectToSend);
         })
         .catch((err) => {
-
             res.status(400).send({ message: err.message });
         });
 });
 
+//get farmers by farmerId.
 router.get("/:farmerId", middlewareAuthentication, async (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
     // console.log(query);
@@ -64,6 +67,7 @@ router.get("/:farmerId", middlewareAuthentication, async (req, res) => {
         });
 });
 
+//get farmer By MHCode
 router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
     getFarmerUsingMHCode(req.params.MHCode, query)
@@ -77,6 +81,7 @@ router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get farmers using GGN key.
 router.get("/GGN/:gcnKey", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);//building query to return only specific parts of data
     getFarmerDataUsingGGN(req.params.gcnKey, query)
@@ -90,6 +95,7 @@ router.get("/GGN/:gcnKey", middlewareAuthentication, (req, res) => {
         });
 });
 
+//add new farmer.
 router.post("/", middlewareAuthentication, async (req, res) => {
     insertFarmer(req.body.data)
         .then((farmer) => {
@@ -102,6 +108,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
         });
 });
 
+//update farmer by farmerId.
 router.patch("/:farmerId", middlewareAuthentication, (req, res) => {
     updateFarmer(req.params.farmerId, req.body.data)
         .then((result) => {
@@ -116,6 +123,7 @@ router.patch("/:farmerId", middlewareAuthentication, (req, res) => {
         });
 })
 
+//update plot of farmer by plotId.
 router.patch("/plots/:plotId", middlewareAuthentication, (req, res) => {
     updatePlotOfFarmer(req.params.plotId, req.body.data)
         .then((result) => {
@@ -132,6 +140,7 @@ router.patch("/plots/:plotId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//add new plot into farmer by farmerId.
 router.patch("/newPlot/:farmerId", middlewareAuthentication, (req, res) => {
     const farmerId = req.params.farmerId;
     insertPlotOfFarmer(farmerId, req.body.data)
@@ -149,6 +158,7 @@ router.patch("/newPlot/:farmerId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete plot of farmer by plotId.
 router.patch("/deletePlot/:plotId", middlewareAuthentication, (req, res) => {
     const plotId = req.params.plotId;
     deletePlotOfFarmer(plotId)
@@ -162,6 +172,7 @@ router.patch("/deletePlot/:plotId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete farmer by farmerId.
 router.delete("/:farmerId", middlewareAuthentication, async (req, res) => {
     deleteFarmer(req.params.farmerId)
         .then((data) => {
@@ -179,6 +190,7 @@ export default router;
 
 
 //supporting functions.
+//get all plots for family head
 function getPlotsForHead(result, i) {
     const gcnKey = result[i].personalInformation.GGN;
     const resultLength = result.length;
@@ -193,6 +205,7 @@ function getPlotsForHead(result, i) {
     return resultantArray;
 }
 
+//get plots for single farmer.
 function getPlots(result, i) {
     const plotsArray = result[i].plots;
     const numberOfPlots = plotsArray.length;

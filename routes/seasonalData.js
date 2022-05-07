@@ -5,6 +5,7 @@ import { getAllSeasonalData, getSeasonalData, getFarmerSeasonalData, getPlotsSea
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
+//get all seasonal data.
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     getAllSeasonalData(query)
@@ -16,6 +17,7 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//
 router.get("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res) => {
     //to get data on basis of seasonalDataId 
     //for farmerId!=='data' I have to return considering farmerId is specified
@@ -37,6 +39,7 @@ router.get("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res) =
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
+        //det seasonal data's for farmer by farmerId.
         getFarmerSeasonalData(farmerId, query)
             .then((data) => {
                 res.status(200).send(data);
@@ -47,6 +50,7 @@ router.get("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res) =
     }
 });
 
+//get seasonal data's for a single plot by plotId.
 router.get("/farmers/plots/:plotId", middlewareAuthentication, (req, res) => {
     const plotId = req.params.plotId;
     const query = builtProjection(req.query);
@@ -59,6 +63,7 @@ router.get("/farmers/plots/:plotId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get seasonal data's for a single plot by MHCode.
 router.get("/farmers/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const MHCode = req.params.MHCode;
     const query = builtProjection(req.query);
@@ -71,6 +76,7 @@ router.get("/farmers/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
         });
 });
 
+//add new seasonal data.
 router.post("/", middlewareAuthentication, (req, res) => {
     insertSeasonalData(req.body.data)
         .then((data) => {
@@ -81,6 +87,7 @@ router.post("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//update seasonal data.
 router.patch("/:id", middlewareAuthentication, (req, res) => {
     updateSeasonalData(req.params.id, req.body.data)
         .then((result) => {
@@ -96,6 +103,7 @@ router.patch("/:id", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete seasonal data.
 router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res) => {
     //to get data on basis of seasonalDataId 
     //for farmerId!=='data' I have to return considering farmerId is specified
@@ -116,6 +124,7 @@ router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res
             res.status(404).send({ message: "invalid route specified" });
         }
     } else {
+        //delete seasonal data by farmerId.
         deleteFarmerSeasonalData(farmerId)
             .then((data) => {
                 res.status(200).send({ message: " records deleted" });
@@ -126,6 +135,7 @@ router.delete("/:farmerId/:seasonalDataId?", middlewareAuthentication, (req, res
     }
 });
 
+//delete seasonal data by year.
 router.delete("/deleteByYear/data/:year", middlewareAuthentication, (req, res) => {
     const year = req.params.year;
     deleteSeasonalDataByYear(year)
@@ -139,6 +149,7 @@ router.delete("/deleteByYear/data/:year", middlewareAuthentication, (req, res) =
         });
 });
 
+//delete seasonal data for a single plot by plotId.
 router.delete("/deleteByPlot/data/:plotId", middlewareAuthentication, (req, res) => {
     const plotId = req.params.plotId;
     deleteSeasonalDataByPlotId(plotId)

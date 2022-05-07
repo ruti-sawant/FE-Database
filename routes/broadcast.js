@@ -6,6 +6,7 @@ import { deleteBroadcast, getAllBroadcasts, getAllFarmersCount, getBroadcast, ge
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
+//get all broadcasts
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
 
@@ -20,6 +21,7 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get broadcast by id
 router.get("/:broadcastId", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
 
@@ -35,6 +37,7 @@ router.get("/:broadcastId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get broadcast for farmer by farmerId
 router.get("/farmer/:farmerId", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
 
@@ -50,6 +53,7 @@ router.get("/farmer/:farmerId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to add new broadcast.
 router.post("/", middlewareAuthentication, async (req, res) => {
     const data = req.body.data;
     console.log(data);
@@ -62,6 +66,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
         if (toAllFarmers) {//setting empty arrays to other two attributes.
             data.tags = [];
             data.farmers = [];
+            //get recipient count;
             await getAllFarmersCount()
                 .then((count) => {
                     data.analytics.numberOfRecipients = count;
@@ -72,6 +77,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
                 });
         } else if (tagsArray && tagsArray.length > 0) {
             data.toAllFarmers = false;
+            //getting farmers for tags
             await getFarmersForTags(tagsArray)
                 .then((farmersFromTags) => {
                     data.farmers = farmersFromTags;
@@ -82,14 +88,16 @@ router.post("/", middlewareAuthentication, async (req, res) => {
                     return;
                 });
         } else if (farmersArray && farmersArray.length > 0) {
+            //setting farmers array and its length.
             data.toAllFarmers = false;
             data.analytics.numberOfRecipients = farmersArray.length;
             data.tags = [];
         } else {
-            res.status(400).send({ message: "Failed to insert question whom to send not specified" });
+            res.status(400).send({ message: "Failed to insert broadcast" });
             return;
         }
         console.log("Data after processing tags farmers and toAllFarmers", data);
+        //insert data in database.
         insertBroadcast(data)
             .then((resData) => {
                 console.log("data insertBroadcast", resData);
@@ -104,6 +112,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
     }
 });
 
+//insert question to broadcast
 router.patch("/:broadcastId", middlewareAuthentication, (req, res) => {
     const broadcastId = req.params.broadcastId;
     if (req.body.data) {
@@ -123,6 +132,7 @@ router.patch("/:broadcastId", middlewareAuthentication, (req, res) => {
     }
 });
 
+//add answer to chat broadcast and update broadcast
 router.patch("/:broadcastId/:chatId", middlewareAuthentication, (req, res) => {
     const broadcastId = req.params.broadcastId;
     const chatId = req.params.chatId;
@@ -143,6 +153,7 @@ router.patch("/:broadcastId/:chatId", middlewareAuthentication, (req, res) => {
     }
 });
 
+//delete broadcast by its id.
 router.delete("/:broadcastId", middlewareAuthentication, (req, res) => {
     const broadcastId = req.params.broadcastId;
     deleteBroadcast(broadcastId)

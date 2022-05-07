@@ -5,7 +5,7 @@ import middlewareAuthentication from "../authentication.js";
 import { deleteMonitoring, deleteMonitoringForPlot, getAllMonitoring, getMonitoring, getMonitoringForPlot, insertMonitoring } from "../controllers/cropMonitoring.con.js";
 import { builtProjection } from "../supportiveFunctions.js";
 
-
+//get all crop monitorings.
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
 
@@ -20,6 +20,7 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get data of single crop monitoring.
 router.get("/data/:monitoringId", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     const monitoringId = req.params.monitoringId;
@@ -35,6 +36,7 @@ router.get("/data/:monitoringId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get data of crop monitoring for single plot.
 router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     const MHCode = req.params.MHCode;
@@ -50,6 +52,7 @@ router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
         });
 });
 
+//add new crop monitoring.
 router.post("/", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
     insertMonitoring(data)
@@ -63,6 +66,7 @@ router.post("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete crop monitoring.
 router.delete("/:monitoringId", middlewareAuthentication, (req, res) => {
     const monitoringId = req.params.monitoringId;
 
@@ -77,6 +81,7 @@ router.delete("/:monitoringId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete monitorings of a plot by MHCode.
 router.delete("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const MHCode = req.params.MHCode;
 

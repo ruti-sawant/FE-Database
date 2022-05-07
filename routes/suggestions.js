@@ -4,6 +4,7 @@ const router = Router();
 import middlewareAuthentication from "../authentication.js";
 import { getSuggestions, pushData } from "../controllers/suggestions.con.js";
 
+//to get all chemicals
 router.get("/chemicals", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -32,6 +33,7 @@ router.get("/chemicals", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get all fertilizers
 router.get("/fertilizers", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -51,6 +53,7 @@ router.get("/fertilizers", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get spray fertilizers
 router.get("/sprayFertilizers", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -67,6 +70,7 @@ router.get("/sprayFertilizers", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get spray fungicides
 router.get("/sprayFungicides", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -84,6 +88,7 @@ router.get("/sprayFungicides", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get spray insecticides
 router.get("/sprayInsecticides", middlewareAuthentication, (req, res) => {
     getSuggestions()
 
@@ -102,6 +107,7 @@ router.get("/sprayInsecticides", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get organic spray chemicals
 router.get("/sprayOrganics", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -119,6 +125,7 @@ router.get("/sprayOrganics", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get plant growth regulators sprays
 router.get("/sprayPlantGrowthRegulators", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -135,6 +142,7 @@ router.get("/sprayPlantGrowthRegulators", middlewareAuthentication, (req, res) =
         });
 });
 
+//to get irrigation fertilizers
 router.get("/irrigationFertilizers", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -151,7 +159,7 @@ router.get("/irrigationFertilizers", middlewareAuthentication, (req, res) => {
         })
 });
 
-
+//to get farmwork list
 router.get("/farmWorks", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -169,13 +177,13 @@ router.get("/farmWorks", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get soilwork list.
 router.get("/soilWorks", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
             console.log(data);
             const dataToReturn = [];
             data.soilWork.forEach((element) => {
-
                 dataToReturn.push(element);
             });
             res.status(200).send(dataToReturn);
@@ -186,6 +194,7 @@ router.get("/soilWorks", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to get maintenance list.
 router.get("/maintenanceWorks", middlewareAuthentication, (req, res) => {
     getSuggestions()
         .then((data) => {
@@ -203,7 +212,7 @@ router.get("/maintenanceWorks", middlewareAuthentication, (req, res) => {
 });
 
 
-
+//to add data into fertilizers in suggestion collections.
 router.post("/:key", middlewareAuthentication, (req, res) => {
     pushData(req.params.key, req.body.data)
         .then((data) => {

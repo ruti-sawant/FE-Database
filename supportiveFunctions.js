@@ -1,5 +1,6 @@
 
 //supporting functions 
+//to build query out of request query.
 export function builtProjection(object) {
     for (let attribute in object) {
         if (object[attribute] === '1') {

@@ -29,6 +29,7 @@ import Login from "../models/login.model.js";
 //     }
 // });
 
+//get all farmers.
 export function getAllFarmersData(fields) {
     return new Promise((resolve, reject) => {
         FarmerInfo.find({}, fields)
@@ -37,6 +38,7 @@ export function getAllFarmersData(fields) {
     });
 }
 
+//get single farmer data by its id.
 export function getFarmerData(id, fields) {
     return new Promise((resolve, reject) => {
         FarmerInfo.findById(id, fields)
@@ -45,7 +47,7 @@ export function getFarmerData(id, fields) {
     })
 }
 
-
+//get farmers using GGN.
 export function getFarmerDataUsingGGN(GGN, fields) {
     return new Promise((resolve, reject) => {
         FarmerInfo.find({ "personalInformation.GGN": GGN }, fields)
@@ -54,6 +56,7 @@ export function getFarmerDataUsingGGN(GGN, fields) {
     });
 }
 
+//get farmers using MHCode.
 export function getFarmerUsingMHCode(MHCode, fields) {
     return new Promise((resolve, reject) => {
         FarmerInfo.find({ "plots.farmInformation.MHCode": MHCode }, fields)
@@ -62,8 +65,8 @@ export function getFarmerUsingMHCode(MHCode, fields) {
     });
 }
 
+//insert farmer into database api.
 export function insertFarmer(farmer) {
-
     return new Promise((resolve, reject) => {
         const farmerObject = new FarmerInfo(farmer);
         farmerObject.save()
@@ -74,9 +77,11 @@ export function insertFarmer(farmer) {
                         if (farmer.plots[0].farmInformation && farmer.plots[0].farmInformation.MHCode)
                             MHCode = farmer.plots[0].farmInformation.MHCode
                     }
+                    //update name GGN MHCode in filters.
                     updateFilters(farmer.personalInformation.name, farmer.personalInformation.GGN, MHCode, undefined, undefined, undefined);
                 } catch (err) {
                     console.log("Error in filter of insert of farmer", err);
+                    return;
                 }
                 //code to create password for user.
                 const userId = farmer.personalInformation.userId;
@@ -84,9 +89,11 @@ export function insertFarmer(farmer) {
                 const userType = "farmer";
                 const mongoId = data._id;
                 const saltRounds = Number(process.env.SALT_ROUNDS);
+                //create hash and insert object into admin.
                 bcrypt.hash(password, saltRounds, function (err, hash) {
                     if (err) {
                         console.log("err", err);
+                        return;
                     } else {
                         const login = new Login({
                             userId, password: hash, userType, mongoId
@@ -107,14 +114,15 @@ export function insertFarmer(farmer) {
     });
 }
 
+//insert plot of farmer into database api.
 export function insertPlotOfFarmer(farmerId, plot) {
-
     return new Promise((resolve, reject) => {
         FarmerInfo.updateOne({ _id: farmerId }, {
             $push: { plots: plot }
         })
             .then((data) => {
                 try {
+                    //update collection of filters.
                     updateFilters(undefined, undefined, plot.farmInformation.MHCode, undefined, undefined, undefined);
                 } catch (err) {
                     console.log("Error in filter of insert of farmer", err);
@@ -125,12 +133,15 @@ export function insertPlotOfFarmer(farmerId, plot) {
     });
 }
 
+//update data of farmer into database api.
 export function updateFarmer(id, data) {
     try {
+        //update collection of filters.
         updateFilters(data.personalInformation.name, data.personalInformation.GGN);
     } catch (err) {
         console.log("Error in filter of update farmer", err);
     }
+    //update farmer data.
     return new Promise((resolve, reject) => {
         FarmerInfo.updateOne({ _id: id },
             { $set: data }
@@ -140,8 +151,10 @@ export function updateFarmer(id, data) {
     });
 }
 
+//update plot of farmer into database api.
 export function updatePlotOfFarmer(_id, data) {
     try {
+        //update filters.
         updateFilters(undefined, undefined, data.farmInformation.MHCode, data.address.village, data.other.tags, data.farmInformation.variety);
     } catch (err) {
         console.log("Error in filter of update plot of farmer", err);
@@ -160,11 +173,13 @@ export function updatePlotOfFarmer(_id, data) {
     });
 }
 
+//delete farmer from database api.
 export function deleteFarmer(id) {
     return new Promise((resolve, reject) => {
         FarmerInfo.findByIdAndDelete(id)
             .then(async (data) => {
                 console.log(data);
+                //get fields of farmer for removing it from filters.
                 let GGN = null;
                 if (data && data.personalInformation.name.trim() === data.personalInformation.familyName.trim()) {
                     GGN = data.personalInformation.GGN;
@@ -177,9 +192,11 @@ export function deleteFarmer(id) {
                         MHCodes.push(data.plots[i].farmInformation.MHCode);
                     }
                 }
+                //delete seasonal data of farmer by farmer id.
                 await deleteFarmerSeasonalData(id)
                     .then((data) => { })
                     .catch((err) => { console.log("err seasonal data err ", err); });
+                //update filters collection and remove MHCodes,GGN,farmerName from filters.
                 await Filter.findOneAndUpdate({}, {
                     $pull: {
                         MHCode: { $in: MHCodes },
@@ -189,6 +206,7 @@ export function deleteFarmer(id) {
                 })
                     .then((data) => { })
                     .catch((err) => { console.log("err ggn mhcode ", err); });
+                //delete user from login collection.
                 Login.findOneAndDelete({ mongoId: data._id })
                     .then((result) => {
                         console.log(result);
@@ -202,6 +220,7 @@ export function deleteFarmer(id) {
     });
 }
 
+//delete 
 export function deletePlotOfFarmer(plotId) {
     return new Promise((resolve, reject) => {
         FarmerInfo.findOne({ "plots._id": plotId })
@@ -209,6 +228,7 @@ export function deletePlotOfFarmer(plotId) {
                 if (data && data.plots) {
                     //if more than one plots are there then update the object
                     if (data.plots.length > 1) {
+                        //remove plot from farmer object.
                         FarmerInfo.findOneAndUpdate({ "plots._id": plotId }, {
                             $pull: {
                                 plots: { _id: plotId }
@@ -223,6 +243,7 @@ export function deletePlotOfFarmer(plotId) {
                                         }
                                     }
                                     if (MHCode) {
+                                        //remove plot from filters.
                                         await Filter.findOneAndUpdate({}, {
                                             $pull: {
                                                 MHCode: MHCode
@@ -230,6 +251,7 @@ export function deletePlotOfFarmer(plotId) {
                                         })
                                             .then((data) => { })
                                             .catch((err) => { console.log(err); });
+                                        //delete seasonal data by MHCode.
                                         await deleteSeasonalDataByMHCode(MHCode)
                                             .then((data) => { })
                                             .catch((err) => { console.log("err seasonal data err ", err); });
@@ -251,10 +273,12 @@ export function deletePlotOfFarmer(plotId) {
     });
 }
 
+//update filter is function 
 async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variety) {
     try {
         Filter.findOne({})
             .then((data) => {
+                //if farmer name is valid and it is not in filter then add it.
                 if (farmerName && farmerName !== "") {
                     if (!data.farmerName.includes(farmerName)) {
                         Filter.updateOne({}, {
@@ -271,7 +295,9 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     } else {
                         console.log("filter farmer already");
                     }
-                } if (MHCode && MHCode !== "") {
+                }
+                //if MHCode is valid and it is not in filter then add it.
+                if (MHCode && MHCode !== "") {
                     if (!data.MHCode.includes(MHCode)) {
                         Filter.updateOne({}, {
                             $push: {
@@ -287,7 +313,9 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     } else {
                         console.log("filter MHCode already");
                     }
-                } if (GGN && GGN !== "") {
+                }
+                //if GGN is valid and it is not in filter then add it.
+                if (GGN && GGN !== "") {
                     if (!data.GGN.includes(GGN)) {
                         Filter.updateOne({}, {
                             $push: {
@@ -304,7 +332,9 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     else {
                         console.log("filter GGN already");
                     }
-                } if (village && village !== "") {
+                }
+                //if village is valid and it is not in filter then add it.
+                if (village && village !== "") {
                     if (!data.village.includes(village)) {
                         Filter.updateOne({}, {
                             $push: {
@@ -321,14 +351,18 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                     else {
                         console.log("filter village already");
                     }
-                } if (filterTag && filterTag.length !== 0) {
+                }
+                //if filterTag is valid and it is not in filter then add it.
+                if (filterTag && filterTag.length !== 0) {
                     const uniqueTagsArray = [];
+
                     for (let i = 0; i < filterTag.length; i++) {
+                        // only take unique tags.
                         if (!data.tag.includes(filterTag[i]) && !uniqueTagsArray.includes(filterTag[i])) {
                             uniqueTagsArray.push(filterTag[i]);
                         }
                     }
-                    console.log("unique array in filterTags", uniqueTagsArray);
+                    // console.log("unique array in filterTags", uniqueTagsArray);
                     Filter.updateOne({}, {
                         $push: {
                             tag: { $each: uniqueTagsArray }
@@ -340,7 +374,9 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                         .catch((err) => {
                             console.log("filter tag", err);
                         })
-                } if (variety && variety !== "") {
+                }
+                //if variety is valid and it is not in filter then add it.
+                if (variety && variety !== "") {
                     console.log(data.variety);
                     if (!data.variety.includes(variety)) {
                         Filter.updateOne({}, {

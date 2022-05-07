@@ -5,7 +5,7 @@ import middlewareAuthentication from "../authentication.js";
 import { deleteReport, deleteReportForPlot, deleteReportForPlotAndYear, getAllApprovedChemicals, getAllBannedChemicals, getAllMrlReports, getMrlReport, getMRlReportByMHCode, getMRLReportBySampleNumber, insertMultipleReports, insertReport, updateAllApprovedChemicals, updateAllBannedChemicals } from "../controllers/mrl.con.js";
 import { builtProjection } from "../supportiveFunctions.js";
 
-//methods for MRL Reports.
+//get mrl reports.
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     getAllMrlReports(query)
@@ -19,6 +19,7 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get single report by mrlId.
 router.get("/data/:mrlId", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     const mrlId = req.params.mrlId;
@@ -33,6 +34,7 @@ router.get("/data/:mrlId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get mrl reports by MHCode.
 router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     const MHCode = req.params.MHCode;
@@ -47,6 +49,7 @@ router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
         });
 });
 
+//get mrl by sample number.
 router.get("/sampleNumber/:sampleNumber", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     const sampleNumber = req.params.sampleNumber;
@@ -61,6 +64,7 @@ router.get("/sampleNumber/:sampleNumber", middlewareAuthentication, (req, res) =
         });
 });
 
+//add new mrl report.
 router.post("/", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
     insertReport(data)
@@ -88,6 +92,7 @@ router.post("/postAll", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete mrl report.
 router.delete("/:mrlId", middlewareAuthentication, (req, res) => {
     const mrlId = req.params.mrlId;
     deleteReport(mrlId)
@@ -101,10 +106,12 @@ router.delete("/:mrlId", middlewareAuthentication, (req, res) => {
         });
 });
 
+//delete mrlreports for 
 router.delete("/MHCode/:MHCode/:year?", middlewareAuthentication, (req, res) => {
     const MHCode = req.params.MHCode;
     const year = req.params.year;
     if (year) {
+        // if year specified delete all reports for that year and MHCode
         deleteReportForPlotAndYear(MHCode, year)
             .then((data) => {
                 console.log(data);
@@ -115,6 +122,7 @@ router.delete("/MHCode/:MHCode/:year?", middlewareAuthentication, (req, res) => 
                 res.status(400).send({ message: err.message });
             });
     } else {
+        //if year not specified delete all reports for that MHCode
         deleteReportForPlot(MHCode)
             .then((data) => {
                 console.log(data);
@@ -129,6 +137,7 @@ router.delete("/MHCode/:MHCode/:year?", middlewareAuthentication, (req, res) => 
 
 
 //methods for approved Chemicals list.
+//to get all approved chemicals
 router.get("/approvedChemicals", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     getAllApprovedChemicals(query)
@@ -142,6 +151,7 @@ router.get("/approvedChemicals", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to add approved chemicals
 router.post("/approvedChemicals", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
     updateAllApprovedChemicals(data)
@@ -157,6 +167,7 @@ router.post("/approvedChemicals", middlewareAuthentication, (req, res) => {
 
 
 // methods for banned Chemicals list.
+//to get all banned chemicals
 router.get("/bannedChemicals", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     getAllBannedChemicals(query)
@@ -170,6 +181,7 @@ router.get("/bannedChemicals", middlewareAuthentication, (req, res) => {
         });
 });
 
+//to add banned chemicals
 router.post("/bannedChemicals", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
     updateAllBannedChemicals(data)

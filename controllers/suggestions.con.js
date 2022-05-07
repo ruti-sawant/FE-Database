@@ -1,5 +1,6 @@
 import Suggestions from "../models/suggestions.model.js";
 
+//get all suggestions.
 export function getSuggestions() {
     return new Promise((resolve, reject) => {
         Suggestions.findOne({})
@@ -8,6 +9,7 @@ export function getSuggestions() {
     });
 }
 
+//to add any suggestion into database with its key and data array to insert.
 export function pushData(key, data) {
     return new Promise((resolve, reject) => {
 

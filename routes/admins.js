@@ -5,6 +5,7 @@ import { getAllAdmins, getAdmin, addAdmin, updateAdmin, deleteAdmin } from "../c
 import { middlewareAuthentication } from '../authentication.js';
 import { builtProjection } from '../supportiveFunctions.js';
 
+//get all admins
 router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     getAllAdmins(query)
@@ -18,7 +19,7 @@ router.get("/", middlewareAuthentication, (req, res) => {
         });
 });
 
-
+//get admin by id
 router.get("/:adminId", middlewareAuthentication, async (req, res) => {
     const query = builtProjection(req.query);
     getAdmin(req.params.adminId, query)
@@ -32,6 +33,7 @@ router.get("/:adminId", middlewareAuthentication, async (req, res) => {
         });
 });
 
+//add admin to database
 router.post("/", middlewareAuthentication, async (req, res) => {
     addAdmin(req.body.data)
         .then((admin) => {
@@ -44,6 +46,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
         });
 });
 
+//update admin by its id.
 router.patch("/:adminId", middlewareAuthentication, async (req, res) => {
     updateAdmin(req.params.adminId, req.body.data)
         .then((admin) => {
@@ -56,7 +59,7 @@ router.patch("/:adminId", middlewareAuthentication, async (req, res) => {
         });
 });
 
-
+//delete admin by its id.
 router.delete("/:adminId", middlewareAuthentication, async (req, res) => {
     deleteAdmin(req.params.adminId)
         .then((admin) => {
@@ -68,4 +71,5 @@ router.delete("/:adminId", middlewareAuthentication, async (req, res) => {
             res.status(400).send({ message: err.message });
         });
 });
+
 export default router;
