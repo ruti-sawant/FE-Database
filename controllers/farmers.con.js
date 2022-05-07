@@ -80,7 +80,7 @@ export function insertFarmer(farmer) {
                     //update name GGN MHCode in filters.
                     updateFilters(farmer.personalInformation.name, farmer.personalInformation.GGN, MHCode, undefined, undefined, undefined);
                 } catch (err) {
-                    console.log("Error in filter of insert of farmer", err);
+                    //console.log("Error in filter of insert of farmer", err);
                     return;
                 }
                 //code to create password for user.
@@ -92,19 +92,19 @@ export function insertFarmer(farmer) {
                 //create hash and insert object into admin.
                 bcrypt.hash(password, saltRounds, function (err, hash) {
                     if (err) {
-                        console.log("err", err);
+                        //console.log("err", err);
                         return;
                     } else {
                         const login = new Login({
                             userId, password: hash, userType, mongoId
                         });
-                        console.log(userId, password, hash, userType, mongoId);
+                        //console.log(userId, password, hash, userType, mongoId);
                         login.save()
                             .then((result) => {
-                                console.log(result);
+                                //console.log(result);
                             })
                             .catch((err) => {
-                                console.log("err last", err);
+                                //console.log("err last", err);
                             });
                     }
                 });
@@ -125,7 +125,7 @@ export function insertPlotOfFarmer(farmerId, plot) {
                     //update collection of filters.
                     updateFilters(undefined, undefined, plot.farmInformation.MHCode, undefined, undefined, undefined);
                 } catch (err) {
-                    console.log("Error in filter of insert of farmer", err);
+                    //console.log("Error in filter of insert of farmer", err);
                 }
                 resolve(data);
             })
@@ -139,7 +139,7 @@ export function updateFarmer(id, data) {
         //update collection of filters.
         updateFilters(data.personalInformation.name, data.personalInformation.GGN);
     } catch (err) {
-        console.log("Error in filter of update farmer", err);
+        //console.log("Error in filter of update farmer", err);
     }
     //update farmer data.
     return new Promise((resolve, reject) => {
@@ -157,7 +157,7 @@ export function updatePlotOfFarmer(_id, data) {
         //update filters.
         updateFilters(undefined, undefined, data.farmInformation.MHCode, data.address.village, data.other.tags, data.farmInformation.variety);
     } catch (err) {
-        console.log("Error in filter of update plot of farmer", err);
+        //console.log("Error in filter of update plot of farmer", err);
     }
     return new Promise((resolve, reject) => {
         FarmerInfo.updateOne({ "plots._id": _id }, {
@@ -178,7 +178,7 @@ export function deleteFarmer(id) {
     return new Promise((resolve, reject) => {
         FarmerInfo.findByIdAndDelete(id)
             .then(async (data) => {
-                console.log(data);
+                //console.log(data);
                 //get fields of farmer for removing it from filters.
                 let GGN = null;
                 if (data && data.personalInformation.name.trim() === data.personalInformation.familyName.trim()) {
@@ -195,7 +195,9 @@ export function deleteFarmer(id) {
                 //delete seasonal data of farmer by farmer id.
                 await deleteFarmerSeasonalData(id)
                     .then((data) => { })
-                    .catch((err) => { console.log("err seasonal data err ", err); });
+                    .catch((err) => {
+                        //console.log("err seasonal data err ", err);
+                    });
                 //update filters collection and remove MHCodes,GGN,farmerName from filters.
                 await Filter.findOneAndUpdate({}, {
                     $pull: {
@@ -205,14 +207,16 @@ export function deleteFarmer(id) {
                     }
                 })
                     .then((data) => { })
-                    .catch((err) => { console.log("err ggn mhcode ", err); });
+                    .catch((err) => {
+                        //console.log("err ggn mhcode ", err);
+                    });
                 //delete user from login collection.
                 Login.findOneAndDelete({ mongoId: data._id })
                     .then((result) => {
-                        console.log(result);
+                        //console.log(result);
                     })
                     .catch((err) => {
-                        console.log("err", err);
+                        //console.log("err", err);
                     });
                 resolve(data);
             })
@@ -250,11 +254,15 @@ export function deletePlotOfFarmer(plotId) {
                                             }
                                         })
                                             .then((data) => { })
-                                            .catch((err) => { console.log(err); });
+                                            .catch((err) => {
+                                                console.log(err);
+                                            });
                                         //delete seasonal data by MHCode.
                                         await deleteSeasonalDataByMHCode(MHCode)
                                             .then((data) => { })
-                                            .catch((err) => { console.log("err seasonal data err ", err); });
+                                            .catch((err) => {
+                                                //console.log("err seasonal data err ", err);
+                                            });
                                     }
                                 }
                                 resolve(data);
@@ -287,13 +295,13 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                             }
                         })
                             .then((data) => {
-                                console.log("FarmerUpdated Successfully", data);
+                                //console.log("FarmerUpdated Successfully", data);
                             })
                             .catch((err) => {
-                                console.log("filter farmer", err);
+                                //console.log("filter farmer", err);
                             })
                     } else {
-                        console.log("filter farmer already");
+                        //console.log("filter farmer already");
                     }
                 }
                 //if MHCode is valid and it is not in filter then add it.
@@ -305,13 +313,13 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                             }
                         })
                             .then((data) => {
-                                console.log("MHCodeUpdated Successfully", data);
+                                //console.log("MHCodeUpdated Successfully", data);
                             })
                             .catch((err) => {
-                                console.log("filter farmer", err);
+                                //console.log("filter farmer", err);
                             })
                     } else {
-                        console.log("filter MHCode already");
+                        //console.log("filter MHCode already");
                     }
                 }
                 //if GGN is valid and it is not in filter then add it.
@@ -323,14 +331,14 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                             }
                         })
                             .then((data) => {
-                                console.log("GGNUpdated Successfully", data);
+                                //console.log("GGNUpdated Successfully", data);
                             })
                             .catch((err) => {
-                                console.log("filter GGN", err);
+                                //console.log("filter GGN", err);
                             })
                     }
                     else {
-                        console.log("filter GGN already");
+                        //console.log("filter GGN already");
                     }
                 }
                 //if village is valid and it is not in filter then add it.
@@ -342,14 +350,14 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                             }
                         })
                             .then((data) => {
-                                console.log("villageUpdated Successfully", data);
+                                //console.log("villageUpdated Successfully", data);
                             })
                             .catch((err) => {
-                                console.log("filter village", err);
+                                //console.log("filter village", err);
                             })
                     }
                     else {
-                        console.log("filter village already");
+                        //console.log("filter village already");
                     }
                 }
                 //if filterTag is valid and it is not in filter then add it.
@@ -369,15 +377,15 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                         }
                     })
                         .then((data) => {
-                            console.log("tagUpdated Successfully", data);
+                            //console.log("tagUpdated Successfully", data);
                         })
                         .catch((err) => {
-                            console.log("filter tag", err);
+                            //console.log("filter tag", err);
                         })
                 }
                 //if variety is valid and it is not in filter then add it.
                 if (variety && variety !== "") {
-                    console.log(data.variety);
+                    //console.log(data.variety);
                     if (!data.variety.includes(variety)) {
                         Filter.updateOne({}, {
                             $push: {
@@ -385,21 +393,21 @@ async function updateFilters(farmerName, GGN, MHCode, village, filterTag, variet
                             }
                         })
                             .then((data) => {
-                                console.log("varietyUpdated Successfully", data);
+                                //console.log("varietyUpdated Successfully", data);
                             })
                             .catch((err) => {
-                                console.log("filter variety", err);
+                                //console.log("filter variety", err);
                             })
                     }
                     else {
-                        console.log(" variety already");
+                        //console.log(" variety already");
                     }
                 }
             })
             .catch((err) => {
-                console.log("Error in inserting FilterData", err);
+                //console.log("Error in inserting FilterData", err);
             });
     } catch (err) {
-        console.log("Error in updating filter ", err);
+        //console.log("Error in updating filter ", err);
     }
 }

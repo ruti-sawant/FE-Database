@@ -36,20 +36,20 @@ export function addAdmin(admin) {
                 //creating hashed password.
                 bcrypt.hash(password, saltRounds, function (err, hash) {
                     if (err) {
-                        console.log("err", err);
+                        //console.log("err", err);
                         reject(err);
                         return;
                     } else {
                         const login = new Login({
                             userId, password: hash, userType, mongoId
                         });
-                        console.log(userId, password, hash, userType, mongoId);
+                        //console.log(userId, password, hash, userType, mongoId);
                         login.save()
                             .then((result) => {
-                                console.log(result);
+                                //console.log(result);
                             })
                             .catch((err) => {
-                                console.log("err last", err);
+                                //console.log("err last", err);
                                 reject(err);
                                 return;
                             });
@@ -80,10 +80,10 @@ export function deleteAdmin(adminId) {
                 //after deleting admin delete its login details.
                 Login.findOneAndDelete({ mongoId: adminId })
                     .then((result) => {
-                        console.log(result);
+                        //console.log(result);
                     })
                     .catch((err) => {
-                        console.log("err", err);
+                        //console.log("err", err);
                     });
 
 

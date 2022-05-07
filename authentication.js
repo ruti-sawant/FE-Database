@@ -38,7 +38,7 @@ async function validate(appId) {
             apiKey = data[0].apiKey;
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
         });
     return appId === apiKey;
 }

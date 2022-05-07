@@ -11,11 +11,11 @@ router.get("/", middlewareAuthentication, (req, res) => {
 
     getAllMonitoring(query)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -27,11 +27,11 @@ router.get("/data/:monitoringId", middlewareAuthentication, (req, res) => {
 
     getMonitoring(monitoringId, query)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -43,11 +43,11 @@ router.get("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
 
     getMonitoringForPlot(MHCode, query)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -57,11 +57,11 @@ router.post("/", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
     insertMonitoring(data)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send({ message: "Monitoring data inserted successfully. " });
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -72,11 +72,11 @@ router.delete("/:monitoringId", middlewareAuthentication, (req, res) => {
 
     deleteMonitoring(monitoringId)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send({ message: "Monitoring data deleted successfully" });
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -87,11 +87,11 @@ router.delete("/MHCode/:MHCode", middlewareAuthentication, (req, res) => {
 
     deleteMonitoringForPlot(MHCode)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send({ message: "Monitoring data for " + MHCode + " deleted successfully" });
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });

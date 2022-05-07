@@ -83,7 +83,7 @@ router.post("/all", middlewareAuthentication, (req, res) => {
             res.status(200).send({ message: "All diaries inserted" });
         })
         .catch((err) => {
-            console.log("err", err);
+            //console.log("err", err);
             res.status(400).send({ message: err.message });
         })
 });
@@ -92,7 +92,7 @@ router.post("/all", middlewareAuthentication, (req, res) => {
 router.patch("/:id", middlewareAuthentication, (req, res) => {
     updateDiary(req.params.id, req.body.data)
         .then((result) => {
-            console.log(result);
+            //console.log(result);
             if (result.acknowledged)
                 res.status(200).send({ message: "Success" });
             else {
@@ -109,7 +109,7 @@ router.patch("/markComplete/:id", middlewareAuthentication, (req, res) => {
     if (req.body.data) {
         markDiaryAsComplete(req.params.id, req.body.data)
             .then((result) => {
-                console.log(result);
+                //console.log(result);
                 res.status(200).send({ message: "Diary " + req.body.data.type + " completed successfully" });
             })
             .catch((err) => {

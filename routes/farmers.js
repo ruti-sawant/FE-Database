@@ -127,7 +127,7 @@ router.patch("/:farmerId", middlewareAuthentication, (req, res) => {
 router.patch("/plots/:plotId", middlewareAuthentication, (req, res) => {
     updatePlotOfFarmer(req.params.plotId, req.body.data)
         .then((result) => {
-            console.log("plot patch result", result);
+            //console.log("plot patch result", result);
             if (result.acknowledged)
                 res.status(200).send({ message: "Success" });
             else {
@@ -135,7 +135,7 @@ router.patch("/plots/:plotId", middlewareAuthentication, (req, res) => {
             }
         })
         .catch((err) => {
-            console.log("plot patch err", err);
+            //console.log("plot patch err", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -145,7 +145,7 @@ router.patch("/newPlot/:farmerId", middlewareAuthentication, (req, res) => {
     const farmerId = req.params.farmerId;
     insertPlotOfFarmer(farmerId, req.body.data)
         .then((result) => {
-            console.log("plot insert result", result);
+            //console.log("plot insert result", result);
             if (result.acknowledged)
                 res.status(200).send({ message: "Success" });
             else {
@@ -153,7 +153,7 @@ router.patch("/newPlot/:farmerId", middlewareAuthentication, (req, res) => {
             }
         })
         .catch((err) => {
-            console.log("plot insert err", err);
+            //console.log("plot insert err", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -163,11 +163,11 @@ router.patch("/deletePlot/:plotId", middlewareAuthentication, (req, res) => {
     const plotId = req.params.plotId;
     deletePlotOfFarmer(plotId)
         .then((data) => {
-            console.log("data", data);
+            //console.log("data", data);
             res.status(200).send({ message: "plot " + plotId + " deleted" });
         })
         .catch((err) => {
-            console.log("err", err);
+            //console.log("err", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -211,7 +211,7 @@ function getPlots(result, i) {
     const numberOfPlots = plotsArray.length;
     const resultantArray = [];
     for (let j = 0; j < numberOfPlots; j++) {
-        console.log(plotsArray[j]);
+        //console.log(plotsArray[j]);
         resultantArray.push({
             plotId: plotsArray[j]._id,
             plot: plotsArray[j].farmInformation.plotNumber,

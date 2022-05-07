@@ -10,11 +10,11 @@ router.get("/", middlewareAuthentication, (req, res) => {
     const query = builtProjection(req.query);
     getAllAdmins(query)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -24,11 +24,11 @@ router.get("/:adminId", middlewareAuthentication, async (req, res) => {
     const query = builtProjection(req.query);
     getAdmin(req.params.adminId, query)
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -37,11 +37,11 @@ router.get("/:adminId", middlewareAuthentication, async (req, res) => {
 router.post("/", middlewareAuthentication, async (req, res) => {
     addAdmin(req.body.data)
         .then((admin) => {
-            // console.log(admin);
+            // //console.log(admin);
             res.status(200).send({ message: 'admin inserted successfully' });
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -50,11 +50,11 @@ router.post("/", middlewareAuthentication, async (req, res) => {
 router.patch("/:adminId", middlewareAuthentication, async (req, res) => {
     updateAdmin(req.params.adminId, req.body.data)
         .then((admin) => {
-            console.log(admin);
+            //console.log(admin);
             res.status(200).send({ message: 'admin updated successfully' });
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -63,11 +63,11 @@ router.patch("/:adminId", middlewareAuthentication, async (req, res) => {
 router.delete("/:adminId", middlewareAuthentication, async (req, res) => {
     deleteAdmin(req.params.adminId)
         .then((admin) => {
-            console.log(admin);
+            //console.log(admin);
             res.status(200).send({ message: 'admin deleted successfully' });
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 });

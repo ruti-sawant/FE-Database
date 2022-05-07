@@ -12,11 +12,11 @@ router.get("/", middlewareAuthentication, (req, res) => {
 
     getAllBroadcasts(query)
         .then((data) => {
-            console.log("data getAllBroadcasts", data);
+            //console.log("data getAllBroadcasts", data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log("err getAllBroadcasts", err);
+            //console.log("err getAllBroadcasts", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -28,11 +28,11 @@ router.get("/:broadcastId", middlewareAuthentication, (req, res) => {
     const broadcastId = req.params.broadcastId;
     getBroadcast(broadcastId, query)
         .then((data) => {
-            console.log("data getBroadcast", data);
+            //console.log("data getBroadcast", data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log("err getBroadcast", err);
+            //console.log("err getBroadcast", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -44,11 +44,11 @@ router.get("/farmer/:farmerId", middlewareAuthentication, (req, res) => {
     const farmerId = req.params.farmerId;
     getBroadcastsForFarmer(farmerId, query)
         .then((data) => {
-            console.log("data getBroadcastsForFarmer", data);
+            //console.log("data getBroadcastsForFarmer", data);
             res.status(200).send(data);
         })
         .catch((err) => {
-            console.log("err getBroadcastsForFarmer", err);
+            //console.log("err getBroadcastsForFarmer", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -56,9 +56,9 @@ router.get("/farmer/:farmerId", middlewareAuthentication, (req, res) => {
 //to add new broadcast.
 router.post("/", middlewareAuthentication, async (req, res) => {
     const data = req.body.data;
-    console.log(data);
+    //console.log(data);
     if (data) {
-        console.log("Data before processing tags farmers and toAllFarmers", data);
+        //console.log("Data before processing tags farmers and toAllFarmers", data);
         const toAllFarmers = data.toAllFarmers;
         const tagsArray = data.tags;
         const farmersArray = data.farmers;
@@ -72,7 +72,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
                     data.analytics.numberOfRecipients = count;
                 })
                 .catch((err) => {
-                    console.log("Error in mapping farmers and tags", err);
+                    //console.log("Error in mapping farmers and tags", err);
                     return;
                 });
         } else if (tagsArray && tagsArray.length > 0) {
@@ -84,7 +84,7 @@ router.post("/", middlewareAuthentication, async (req, res) => {
                     data.analytics.numberOfRecipients = farmersFromTags.length;
                 })
                 .catch((err) => {
-                    console.log("Error in mapping farmers and tags", err);
+                    //console.log("Error in mapping farmers and tags", err);
                     return;
                 });
         } else if (farmersArray && farmersArray.length > 0) {
@@ -96,15 +96,15 @@ router.post("/", middlewareAuthentication, async (req, res) => {
             res.status(400).send({ message: "Failed to insert broadcast" });
             return;
         }
-        console.log("Data after processing tags farmers and toAllFarmers", data);
+        //console.log("Data after processing tags farmers and toAllFarmers", data);
         //insert data in database.
         insertBroadcast(data)
             .then((resData) => {
-                console.log("data insertBroadcast", resData);
+                //console.log("data insertBroadcast", resData);
                 res.status(200).send({ message: "Broadcast inserted successfully" });
             })
             .catch((err) => {
-                console.log("err insertBroadcast", err);
+                //console.log("err insertBroadcast", err);
                 res.status(400).send({ message: err.message });
             });
     } else {
@@ -120,11 +120,11 @@ router.patch("/:broadcastId", middlewareAuthentication, (req, res) => {
         const question = req.body.data.question;
         insertQuestion(broadcastId, farmerName, question)
             .then((data) => {
-                console.log("data insertQuestion", data);
+                //console.log("data insertQuestion", data);
                 res.status(200).send({ message: "Broadcast chat inserted successfully" });
             })
             .catch((err) => {
-                console.log("err insertQuestion", err);
+                //console.log("err insertQuestion", err);
                 res.status(400).send({ message: err.message });
             });
     } else {
@@ -141,11 +141,11 @@ router.patch("/:broadcastId/:chatId", middlewareAuthentication, (req, res) => {
         const answer = req.body.data.answer;
         updateAnswer(broadcastId, chatId, adminName, answer)
             .then((data) => {
-                console.log("data updateAnswer", data);
+                //console.log("data updateAnswer", data);
                 res.status(200).send({ message: "Broadcast answer inserted successfully" });
             })
             .catch((err) => {
-                console.log("err updateAnswer", err);
+                //console.log("err updateAnswer", err);
                 res.status(400).send({ message: err.message });
             });
     } else {
@@ -158,11 +158,11 @@ router.delete("/:broadcastId", middlewareAuthentication, (req, res) => {
     const broadcastId = req.params.broadcastId;
     deleteBroadcast(broadcastId)
         .then((data) => {
-            console.log("data deleteBroadcast", data);
+            //console.log("data deleteBroadcast", data);
             res.status(200).send({ message: "Broadcast deleted successfully" });
         })
         .catch((err) => {
-            console.log("err deleteBroadcast", err);
+            //console.log("err deleteBroadcast", err);
             res.status(400).send({ message: err.message });
         });
 });

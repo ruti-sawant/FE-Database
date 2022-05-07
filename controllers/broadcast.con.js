@@ -85,7 +85,7 @@ export async function getFarmersForTags(tags) {
             }
         })
         .catch((err) => {
-            console.log("Error in mapping farmer and tags for broadcast");
+            //console.log("Error in mapping farmer and tags for broadcast");
             throw err;
         });
     return Array.from(resultSet);
@@ -96,11 +96,11 @@ export async function getAllFarmersCount() {
     let farmersCount = 0;
     await FarmerInfo.find({}, { _id: 1 })
         .then((data) => {
-            console.log("Data", data);
+            //console.log("Data", data);
             farmersCount = data.length;
         })
         .catch((err) => {
-            console.log("Error in counting farmers");
+            //console.log("Error in counting farmers");
             throw err;
         });
     return farmersCount;
@@ -169,9 +169,9 @@ async function deleteFileFromDrive(fileId) {
     })
         .then((res) => {
             // console.log(res);
-            console.log("file deleted ", fileId);
+            //console.log("file deleted ", fileId);
         }).catch((err) => {
-            console.log(err);
+            //console.log(err);
         })
 }
 
@@ -180,7 +180,7 @@ async function updateFilters(category) {
     try {
         Filter.findOne({})
             .then((data) => {
-                console.log(data.broadcastCategory);
+                //console.log(data.broadcastCategory);
                 if (category && category !== "") {
                     //for valid and new category add it to filters.
                     if (!data.broadcastCategory.includes(category)) {
@@ -190,20 +190,20 @@ async function updateFilters(category) {
                             }
                         })
                             .then((data) => {
-                                console.log("category Updated Successfully");
+                                //console.log("category Updated Successfully");
                             })
                             .catch((err) => {
-                                console.log("filter category", err);
+                                //console.log("filter category", err);
                             })
                     } else {
-                        console.log("filter category already");
+                        //console.log("filter category already");
                     }
                 }
             })
             .catch((err) => {
-                console.log("Error in inserting FilterData", err);
+                //console.log("Error in inserting FilterData", err);
             });
     } catch (err) {
-        console.log("Error in updating filter ", err);
+        //console.log("Error in updating filter ", err);
     }
 }

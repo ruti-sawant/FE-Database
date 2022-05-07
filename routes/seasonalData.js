@@ -91,7 +91,7 @@ router.post("/", middlewareAuthentication, (req, res) => {
 router.patch("/:id", middlewareAuthentication, (req, res) => {
     updateSeasonalData(req.params.id, req.body.data)
         .then((result) => {
-            console.log(result);
+            //console.log(result);
             if (result.acknowledged)
                 res.status(200).send({ message: "Success" });
             else {
@@ -140,11 +140,11 @@ router.delete("/deleteByYear/data/:year", middlewareAuthentication, (req, res) =
     const year = req.params.year;
     deleteSeasonalDataByYear(year)
         .then((data) => {
-            console.log("data", data);
+            //console.log("data", data);
             res.status(200).send({ message: " records deleted" });
         })
         .catch((err) => {
-            console.log("err", err);
+            //console.log("err", err);
             res.status(400).send({ message: err.message });
         });
 });
@@ -154,11 +154,11 @@ router.delete("/deleteByPlot/data/:plotId", middlewareAuthentication, (req, res)
     const plotId = req.params.plotId;
     deleteSeasonalDataByPlotId(plotId)
         .then((data) => {
-            console.log("data", data);
+            //console.log("data", data);
             res.status(200).send({ message: " records deleted" });
         })
         .catch((err) => {
-            console.log("err", err);
+            //console.log("err", err);
             res.status(400).send({ message: err.message });
         });
 });

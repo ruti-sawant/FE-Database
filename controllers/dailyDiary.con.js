@@ -21,7 +21,7 @@ export function getDiary(diaryId, fields) {
 //get diaries for any single farmer.
 export function getFarmerDiaries(farmerId, fields) {
     return new Promise((resolve, reject) => {
-        console.log("farmerId", farmerId);
+        //console.log("farmerId", farmerId);
         DailyDiary.find({ farmerId: farmerId }, fields)
             .then(resolve)
             .catch(reject);
@@ -31,7 +31,7 @@ export function getFarmerDiaries(farmerId, fields) {
 //get diaries for any single plot by MHCode.
 export function getMHCodeDiaries(MHCode, fields) {
     return new Promise((resolve, reject) => {
-        console.log("mhcode", MHCode);
+        //console.log("mhcode", MHCode);
         DailyDiary.find({ MHCode: MHCode }, fields)
             .then(resolve)
             .catch(reject);
@@ -72,7 +72,7 @@ export function updateDiary(diaryId, data) {
 export function markDiaryAsComplete(_id, updateData) {
     return new Promise((resolve, reject) => {
         let updateQuery;
-        console.log(_id, updateData);
+        //console.log(_id, updateData);
         //for any type update it as complete.
         switch (updateData.type) {
             case "spraying":
@@ -116,7 +116,7 @@ export function markDiaryAsComplete(_id, updateData) {
                 }
                 break;
             default:
-                console.log("Wrong type is specified");
+                //console.log("Wrong type is specified");
                 reject(new Error("wrong type is specified"));
                 return;
         }

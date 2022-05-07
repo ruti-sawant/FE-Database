@@ -43,7 +43,7 @@ export function insertReport(mrl) {
         BannedChemicalsModel.find({})
             .then((bannedChemicalsData) => {
                 //traverse over banned chemicals
-                console.log(bannedChemicalsData);
+                //console.log(bannedChemicalsData);
                 for (let i = 0; i < chemicals.length; i++) {
                     //initially not redlist chemical
                     mrl.chemicals[i].redList = "No";
@@ -107,8 +107,8 @@ export function insertMultipleReports(mrlReports) {
                             }
                         }
                         distinctReports.push(mrlReports[i]);
-                    } else
-                        console.log(mrlReports[i].sampleNumber, "already exists");
+                    }
+                    //console.log(mrlReports[i].sampleNumber, "already exists");
                 }
                 //push report into database at once.
                 MrlReportModel.insertMany(distinctReports)
@@ -161,7 +161,7 @@ export function updateAllApprovedChemicals(approvedChemicals) {
     return new Promise((resolve, reject) => {
         ApprovedChemicalsModel.deleteMany({})
             .then((deleted) => {
-                console.log("deletedData in approved chemicals", deleted);
+                //console.log("deletedData in approved chemicals", deleted);
                 //delete old approved chemicals.
                 //override by new approved chemicals.
                 ApprovedChemicalsModel.insertMany(approvedChemicals)
@@ -169,7 +169,7 @@ export function updateAllApprovedChemicals(approvedChemicals) {
                     .catch(reject);
             })
             .catch((err) => {
-                console.log("error in deleting approved chemicals");
+                //console.log("error in deleting approved chemicals");
                 reject(err);
             });
     });
@@ -190,7 +190,7 @@ export function updateAllBannedChemicals(bannedChemicals) {
     return new Promise((resolve, reject) => {
         BannedChemicalsModel.deleteMany({})
             .then((deleted) => {
-                console.log("deletedData in banned chemicals", deleted);
+                //console.log("deletedData in banned chemicals", deleted);
                 //delete old banned chemicals.
                 //override by new banned chemicals.
                 BannedChemicalsModel.insertMany(bannedChemicals)
@@ -198,7 +198,7 @@ export function updateAllBannedChemicals(bannedChemicals) {
                     .catch(reject);
             })
             .catch((err) => {
-                console.log("error in deleting banned chemicals");
+                //console.log("error in deleting banned chemicals");
                 reject(err);
             });
     });

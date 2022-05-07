@@ -29,7 +29,7 @@ router.get("/usernames", middlewareAuthentication, (req, res) => {
                             });
                         })
                         .catch((err) => {
-                            console.log(err);
+                            //console.log(err);
                             res.status(400).send({ message: err.message });
                             return;
                         });
@@ -44,7 +44,7 @@ router.get("/usernames", middlewareAuthentication, (req, res) => {
                             });
                         })
                         .catch((err) => {
-                            console.log(err);
+                            //console.log(err);
                             res.status(400).send({ message: err.message });
                             return;
                         });
@@ -53,7 +53,7 @@ router.get("/usernames", middlewareAuthentication, (req, res) => {
             res.status(200).send(dataToSend);
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             res.status(400).send({ message: err.message });
         });
 })
@@ -89,7 +89,7 @@ router.post("/verify", middlewareAuthentication, (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
+                //console.log(err);
                 res.status(400).send({ message: err.message });
             });
     } else {
@@ -110,17 +110,17 @@ router.post("/forgotPassword", middlewareAuthentication, (req, res) => {
                     //hash password to store it in database.
                     bcrypt.hash(password, saltRounds, function (err, hash) {
                         if (err) {
-                            console.log("err", err);
+                            //console.log("err", err);
                             res.status(400).send({ message: err.message });
                             return;
                         } else {
                             Login.updateOne({ userId: userId }, { password: hash })
                                 .then((data) => {
-                                    console.log(data);
+                                    //console.log(data);
                                     res.status(200).send({ message: "Password updated successfully" });
                                 })
                                 .catch((err) => {
-                                    console.log(err);
+                                    //console.log(err);
                                     res.status(400).send({ message: err.message });
                                 });
                         }
@@ -130,7 +130,7 @@ router.post("/forgotPassword", middlewareAuthentication, (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
+                //console.log(err);
                 res.status(400).send({ message: err.message });
             });
     } else {

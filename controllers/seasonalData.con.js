@@ -224,8 +224,8 @@ async function deleteFileFromDrive(fileId) {
     })
         .then((res) => {
             // console.log(res);
-            console.log("file deleted ", fileId);
+            //console.log("file deleted ", fileId);
         }).catch((err) => {
-            console.log(err);
+            //console.log(err);
         });
 }

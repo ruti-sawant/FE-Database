@@ -36,7 +36,7 @@ router.post("/generate", middlewareAuthentication, (req, res) => {
                                 }
                             })
                             .catch((err) => {
-                                console.log(err);
+                                //console.log(err);
                             });
                     } else {
                         await Admin.findOne({ userId: userId })
@@ -46,11 +46,11 @@ router.post("/generate", middlewareAuthentication, (req, res) => {
                                 }
                             })
                             .catch((err) => {
-                                console.log(err);
+                                //console.log(err);
                             });
                     }
                     number = "+91" + number;
-                    console.log(number);
+                    //console.log(number);
                     //write code for sending this otp to user's mobile or email and you are get to go.
 
                     //using d7 networks library to send sms.
@@ -66,7 +66,7 @@ router.post("/generate", middlewareAuthentication, (req, res) => {
                         }
                     })
                         .then((messageResponse) => {
-                            console.log(messageResponse);
+                            //console.log(messageResponse);
                             //Save OTP in database.
                             const otpObject = new OTP({
                                 number, otp, expireIn, counter, userId,
@@ -75,12 +75,12 @@ router.post("/generate", middlewareAuthentication, (req, res) => {
                             res.status(200).send(otp);
                         })
                         .catch((err) => {
-                            console.log(err);
+                            //console.log(err);
                             res.status(400).send({ message: err.message });
                             return;
                         });
 
-                    console.log(otp, counter, expireIn, userId);
+                    //console.log(otp, counter, expireIn, userId);
 
                 }
                 else {
@@ -88,7 +88,7 @@ router.post("/generate", middlewareAuthentication, (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
+                //console.log(err);
                 res.status(400).send({ message: "Error while generating Otp" });
             });
     } else {
