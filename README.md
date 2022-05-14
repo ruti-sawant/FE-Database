@@ -22,3 +22,5 @@ This project contains 3 main folders
 app.js file contains all the code to connect to all other files and mongoDB database.
 
 To Run this server you need to have <i>.env</i> file which contains all credentials.
+
+<a href="http://162.240.33.255:5000/"> http://162.240.33.255:5000/ </a> This is the url of this Database API
