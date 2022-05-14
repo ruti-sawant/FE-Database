@@ -61,6 +61,7 @@ router.get("/usernames", middlewareAuthentication, (req, res) => {
 //verify credentials.
 router.post("/verify", middlewareAuthentication, (req, res) => {
     const data = req.body.data;
+    console.log(data);
     if (data) {
         const userId = data.userId;
         const password = data.password;
@@ -70,6 +71,7 @@ router.post("/verify", middlewareAuthentication, (req, res) => {
                     //hash received password and check with database.
                     bcrypt.compare(password, loginObject.password).then(function (result) {
                         if (result) {
+                            console.log(data);
                             //send data to frontend.
                             res.status(200).send({
                                 loggedIn: true,
