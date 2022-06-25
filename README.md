@@ -1,5 +1,10 @@
 # FE-Database
 
+Other Links:<br>
+<a href="https://github.com/ruti-sawant/FE-Backend" target="blank">Backend</a><br>
+<a href="https://github.com/ruti-sawant/FE-Database" target="blank">Database</a><br>
+<a href="https://github.com/Harshal-9/FreshExpress-Dashboard" target="blank">Frontend</a><br>
+
 This is repository of database API for Farmer Connect Web App and Mobile application.<br>
 This server works as data provider for both mobile app and web app.<br>
 In this project authentication is done through API key which must be passed in header.<br>
